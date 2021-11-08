@@ -1,0 +1,20 @@
+{
+  "name": "520-project-makeen-sreng_flores",
+  "version": "1.0.0",
+  "description": "Visualization of meteorite landings on a map",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/JC-SF/520-project-makeen-sreng_flores.git"
+  },
+  "author": "Zacharie Makeen, Juan-Carlos Sreng-Flores",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/JC-SF/520-project-makeen-sreng_flores/issues"
+  },
+  "homepage": "https://gitlab.com/JC-SF/520-project-makeen-sreng_flores#readme"
+}
