@@ -17,7 +17,34 @@ async function read(filename) {
 
     //parse string into an array of objects
     let content = JSON.parse(data);
-    console.log(content);
+
+    //loop through each object in the array
+    content.forEach(function (item, index, object) {
+
+      //remove objects from array whose lat and long are not defined
+      if (item.reclat === "" && item.reclong === "") {
+        object.splice(index, 1);
+        return;
+      }
+      
+      //define new geo object using the item's lat and long properties
+      let geo = {
+        "type": "Point",
+        "coordinates": [
+          item.reclong,
+          item.reclat
+        ]
+      };
+
+      //add geo property to object
+      item.geo = geo;
+
+      //delete properties from object
+      delete item.reclat;
+      delete item.reclong;
+      delete item.GeoLocation;
+    });
+    return content
   } catch (err) {
     console.error(err.message);
     throw err;
