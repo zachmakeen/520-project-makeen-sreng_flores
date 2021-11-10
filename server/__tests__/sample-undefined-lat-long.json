@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Nullarbor 002",
+        "id": 17942,
+        "nametype": "Valid",
+        "recclass": "H6",
+        "mass": 1076,
+        "fall": "Found",
+        "year": 1990,
+        "reclat": "",
+        "reclong": "",
+        "GeoLocation": ""
+    },
+    {
+        "name": "Aachen",
+        "id": 1,
+        "nametype": "Valid",
+        "recclass": "L5",
+        "mass": 21,
+        "fall": "Fell",
+        "year": 1880,
+        "reclat": 50.775,
+        "reclong": 6.08333,
+        "GeoLocation": "(50.775000, 6.083330)"
+      }
+]
