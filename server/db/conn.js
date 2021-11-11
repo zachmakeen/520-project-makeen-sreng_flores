@@ -1,9 +1,17 @@
+/**
+ * This script serves a Class in order to abstract the database functionalities into a DAO object.
+ * @author Juan-Carlos Sreng-Flores
+ */
 require("dotenv").config();
 const dbUrl = process.env.ATLAS_URI;
+console.log(dbUrl)
 const { MongoClient } = require("mongodb");
 
 let instance = null;
 
+/**
+ * This class serves as a Data access object.
+ */
 class DAO {
   constructor() {
     if (!instance) {
@@ -15,36 +23,45 @@ class DAO {
     return instance;
   }
 
+  /**
+   * This function connects to the MongoDB database.
+   * @param {String} dbname Name of the database to be created if not existing
+   * @param {String} collName Name of the collection to be created if not existing
+   * @returns 
+   */
   async connect(dbname, collName) {
     if (this.db) {
       return;
     }
+    console.log("connecting");
     await this.client.connect();
+    console.log("set database name");
     this.db = await this.client.db(dbname);
     console.log("Successfully connected to MongoDB database " + dbname);
     this.collection = await this.db.collection(collName)
   }
 
-  //   //Note the syntax for a projection is different
-  //   async findOne(query, projection) {
-  //     let result = await this.collection.findOne(query, { "projection": projection });
-  //     return result;
-  //   }
-
-  //   async findAll(projection) {
-  //     let result = await this.collection.find().project(projection);
-  //     return result.toArray();
-  //   }
-
+  /**
+   * This function inserts into the database an array of JSON objects.
+   * @param {Array} array 
+   * @returns 
+   */
   async insertMany(array) {
     let result = await this.collection.insertMany(array);
     return result.insertedCount;
   }
 
+  /**
+   * This function creates an index in the database
+   * @param {JSON} index 
+   */
   async createIndex(index) {
     await this.collection.createIndex(index)
   }
 
+  /**
+   * This function disconnects the client from the database.
+   */
   async disconnect() {
     this.client.close();
   }
