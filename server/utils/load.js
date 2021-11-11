@@ -30,7 +30,7 @@ async function read(filepath) {
     content = cleanData(content)
 
     // Add geo field to each items.
-    content.map(addGeoJsonField)
+    content.forEach(addGeoJsonField)
 
     console.log("Parsed " + content.length + " entries.")
 
