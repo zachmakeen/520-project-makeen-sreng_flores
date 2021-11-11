@@ -47,6 +47,31 @@ class DAO {
     return result.insertedCount;
   }
 
+  async findAllFromRec(neLat, neLon, swLat, swLon) {
+    let nwLon = swLon;
+    let nwLat = neLat;
+    let seLon = neLon;
+    let seLat = swLat;
+
+    let result = await db.collection.find({
+      geo: {$geoWithin: 
+        {$geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [nwLon, nwLat],
+              [neLon, neLat],
+              [seLon, seLat], 
+              [swLon, swLat],
+              [nwLon, nwLat]
+            ]
+          ]
+        }}
+      }
+    });
+    return result;
+  }
+
   /**
    * This function creates an index in the database
    * @param {JSON} index 
