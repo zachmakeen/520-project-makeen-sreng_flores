@@ -6,7 +6,7 @@
  * @author Juan-Carlos Sreng-Flores
  */
 const { writeToDb } = require("./utils/writeToDb");
-const filepath = "dataset/meteorite-landings.json";
+const filepath = "server/dataset/meteorite-landings.json";
 const dbname = "project";
 const collection = "meteorite_landing";
 const index = { "geo": "2dsphere" };

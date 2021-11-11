@@ -16,18 +16,17 @@ let dao = new DAO()
  * @param {String} index 
  */
 async function writeToDb(dbname, collection, filename, index) {
-  console.log("Attempting to connect...");
   try {
+    console.log("Attempting to connect to MongoDB database...")
     await dao.connect(dbname, collection);
-    console.log("Connection successful.");
+    console.log("Successfully connected to MongoDB database ");
     await dao.insertMany(await read(filename));
     console.log("Inserted entries to database.");
     await dao.createIndex(index);
-    console.log("Successfully indexed items under" + JSON.stringify(index))
+    console.log("Successfully indexed items under " + JSON.stringify(index))
   } finally {
     dao.disconnect();
   }
-
 }
 
 module.exports = { writeToDb }

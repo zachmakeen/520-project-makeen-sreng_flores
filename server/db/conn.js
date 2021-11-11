@@ -4,7 +4,6 @@
  */
 require("dotenv").config();
 const dbUrl = process.env.ATLAS_URI;
-console.log(dbUrl)
 const { MongoClient } = require("mongodb");
 
 let instance = null;
@@ -33,11 +32,8 @@ class DAO {
     if (this.db) {
       return;
     }
-    console.log("connecting");
     await this.client.connect();
-    console.log("set database name");
     this.db = await this.client.db(dbname);
-    console.log("Successfully connected to MongoDB database " + dbname);
     this.collection = await this.db.collection(collName)
   }
 
@@ -56,7 +52,7 @@ class DAO {
    * @param {JSON} index 
    */
   async createIndex(index) {
-    await this.collection.createIndex(index)
+    return await this.collection.createIndex(index)
   }
 
   /**
