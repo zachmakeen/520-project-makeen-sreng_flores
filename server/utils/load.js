@@ -47,19 +47,19 @@ async function read(filepath) {
  * @returns cleaned array with no invalid data.
  */
 function cleanData(array) {
+  // Remove empty location, remove objects from array whose lat and long are not defined
+  // Remove meteorite out of bounds of latitude as recommended by the source.
   let filters = [
-    // Remove empty location, remove objects from array whose lat and long are not defined
-    item => typeof item.reclat === "number" && typeof item.reclong === "number",
-    // Remove items out of bounds of latitude as recommended by the source.
-    item => item.reclong >= MIN_LONG && item.reclong <= MAX_LONG,
-    item => item.reclat >= MIN_LAT && item.reclat <= MAX_LAT
+    meteorite => typeof meteorite.reclat === "number" && typeof meteorite.reclong === "number",
+    meteorite => meteorite.reclong >= MIN_LONG && meteorite.reclong <= MAX_LONG,
+    meteorite => meteorite.reclat >= MIN_LAT && meteorite.reclat <= MAX_LAT
   ]
   // Final filter to remove all at once. If the filter returns false then the
   // final filter will return false. Otherwise, it will return undefined where the 
   // finalFilter will return true.
-  finalFilter = item => filters.find(filter => filter(item) === false) === undefined;
+  multipleFilterFn = meteorite => filters.every(filterFn => filterFn(meteorite));
 
-  return array.filter(finalFilter);
+  return array.filter(multipleFilterFn);
 }
 
 /**
