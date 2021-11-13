@@ -1,6 +1,6 @@
 const app = require("./app");
 // get db connection
-const DAO = require("../db/conn");
+const DAO = require("./db/conn");
 
 const PORT = process.env.PORT || 3001;
 const dbname = "project";
