@@ -18,6 +18,17 @@ router.get("/", async (req, res) => {
   }
 });
 
+//retrieve info about a particular meteorite landing
+router.get("/meteorite_landing/:id", async (req, res) => {
+  try {
+    let ml = await db.findById(req.params.id);
+    res.send(ml);
+  } catch (e) {
+    console.error(e.message);
+    res.sendStatus(500).end();
+  }
+});
+
 //retrieve a list of meteorite landings
 router.get("/meteorite_landings", async (req, res) => {
   try {
