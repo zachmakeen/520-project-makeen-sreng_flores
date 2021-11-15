@@ -9,7 +9,7 @@ const api = require("./routes/api.js");
 const swaggerDefinition = {
   openapi: "3.0.0",
   info: {
-    title: "swaggerDefinition",
+    title: "Express API for Meteorite Landings",
     version: "1.0.0",
   },
 };
