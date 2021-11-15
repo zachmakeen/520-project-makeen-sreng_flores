@@ -54,7 +54,7 @@ class DAO {
    * @returns an object that contains the specified id
    */
   async findById(id, projection) {
-    let result = await this.collection.findOne({"_id": ObjectId(id)}, projection);
+    let result = await this.collection.findOne({ "_id": ObjectId(id) }, projection);
     return result;
   }
 
@@ -76,19 +76,22 @@ class DAO {
 
     //define polygon and find objects that are within this polygon
     let result = await this.collection.find({
-      geo: {$geoWithin: 
-        {$geometry: {
-          type: "Polygon",
-          coordinates: [
-            [
-              [nwLon, nwLat],
-              [neLon, neLat],
-              [seLon, seLat], 
-              [swLon, swLat],
-              [nwLon, nwLat]
+      geo: {
+        $geoWithin:
+        {
+          $geometry: {
+            type: "Polygon",
+            coordinates: [
+              [
+                [nwLon, nwLat],
+                [neLon, neLat],
+                [seLon, seLat],
+                [swLon, swLat],
+                [nwLon, nwLat]
+              ]
             ]
-          ]
-        }}
+          }
+        }
       }
     });
     return result.toArray();
@@ -122,4 +125,4 @@ class DAO {
 }
 
 
-module.exports = DAO;
+module.exports = { DAO };

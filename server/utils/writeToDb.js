@@ -2,7 +2,7 @@
  * This script exports a function writeToDb in order to write a JSON dataset into the database
  * @author Juan-Carlos Sreng-Flores
  */
-const DAO = require("../db/conn")
+const { DAO } = require("../db/conn")
 const { read } = require("./load")
 let dao = new DAO()
 

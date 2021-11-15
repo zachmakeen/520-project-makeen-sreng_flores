@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 // get db connection
-const DAO = require("../db/conn");
+const { DAO } = require("../db/conn");
 const db = new DAO();
 
 //parser middleware will parse the json payload
