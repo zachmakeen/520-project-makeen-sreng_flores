@@ -38,6 +38,63 @@ class DAO {
   }
 
   /**
+   * This function queries all objects in the database
+   * @param {Object} projection controls which fields appear
+   * @returns an array of objects in the database
+   */
+  async findAll(projection) {
+    let result = await this.collection.find().project(projection);
+    return result.toArray();
+  }
+
+  /**
+   * This function queries an object that has a matching id
+   * @param {String} id object's id
+   * @param {Object} projection controls which fields appear
+   * @returns an object that contains the specified id
+   */
+  async findById(id, projection) {
+    let result = await this.collection.findOne({"_id": id}).project(projection);
+    return result;
+  }
+
+  /**
+   * This function queries all objects that are within the polygon defined by the coordinates
+   * @param {float} neLat north-east latitude
+   * @param {float} neLon north-east longitude
+   * @param {float} swLat south-west latitude
+   * @param {float} swLon south-west longitude
+   * @returns an array of objects that are within the area of the polygon
+   */
+  async findAllInRectangle(neLat, neLon, swLat, swLon) {
+
+    //find missing coordinates
+    let nwLon = swLon;
+    let nwLat = neLat;
+    let seLon = neLon;
+    let seLat = swLat;
+
+    //define polygon and find objects that are within this polygon
+    let result = await db.collection.find({
+      geo: {$geoWithin: 
+        {$geometry: {
+          type: "Polygon",
+          coordinates: [
+            [
+              [nwLon, nwLat],
+              [neLon, neLat],
+              [seLon, seLat], 
+              [swLon, swLat],
+              [nwLon, nwLat]
+            ]
+          ]
+        }}
+      }
+    });
+    return result;
+  }
+
+  /**
    * This function inserts into the database an array of JSON objects.
    * @param {Array} array 
    * @returns 
