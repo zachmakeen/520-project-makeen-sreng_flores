@@ -4,7 +4,7 @@
  */
 require("dotenv").config();
 const dbUrl = process.env.ATLAS_URI;
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 let instance = null;
 
@@ -54,7 +54,7 @@ class DAO {
    * @returns an object that contains the specified id
    */
   async findById(id, projection) {
-    let result = await this.collection.findOne({"_id": id}).project(projection);
+    let result = await this.collection.findOne({"_id": ObjectId(id)}, projection);
     return result;
   }
 
@@ -66,7 +66,7 @@ class DAO {
    * @param {float} swLon south-west longitude
    * @returns an array of objects that are within the area of the polygon
    */
-  async findAllInRectangle(neLat, neLon, swLat, swLon) {
+  async findAllInRectangle(neLon, neLat, swLon, swLat) {
 
     //find missing coordinates
     let nwLon = swLon;
@@ -75,7 +75,7 @@ class DAO {
     let seLat = swLat;
 
     //define polygon and find objects that are within this polygon
-    let result = await db.collection.find({
+    let result = await this.collection.find({
       geo: {$geoWithin: 
         {$geometry: {
           type: "Polygon",
@@ -91,7 +91,7 @@ class DAO {
         }}
       }
     });
-    return result;
+    return result.toArray();
   }
 
   /**
