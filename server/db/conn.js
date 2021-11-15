@@ -66,7 +66,7 @@ class DAO {
    * @param {float} swLon south-west longitude
    * @returns an array of objects that are within the area of the polygon
    */
-  async findAllInRectangle(neLat, neLon, swLat, swLon) {
+  async findAllInRectangle(neLon, neLat, swLon, swLat) {
 
     //find missing coordinates
     let nwLon = swLon;

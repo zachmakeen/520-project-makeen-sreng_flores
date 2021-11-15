@@ -33,10 +33,10 @@ router.get("/meteorite_landing/:id", async (req, res) => {
 router.get("/meteorite_landings", async (req, res) => {
   try {
     let ml = await db.findAllInRectangle(
-      parseFloat(req.query.neLat),
       parseFloat(req.query.neLon),
-      parseFloat(req.query.swLat),
-      parseFloat(req.query.swLon)
+      parseFloat(req.query.neLat),
+      parseFloat(req.query.swLon),
+      parseFloat(req.query.swLat)
     );
     res.send(ml);
   } catch (e) {
