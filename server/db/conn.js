@@ -75,7 +75,7 @@ class DAO {
     let seLat = swLat;
 
     //define polygon and find objects that are within this polygon
-    let result = await db.collection.find({
+    let result = await this.collection.find({
       geo: {$geoWithin: 
         {$geometry: {
           type: "Polygon",
@@ -91,7 +91,7 @@ class DAO {
         }}
       }
     });
-    return result;
+    return result.toArray();
   }
 
   /**
