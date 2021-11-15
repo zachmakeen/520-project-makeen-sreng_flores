@@ -4,7 +4,7 @@
  */
 require("dotenv").config();
 const dbUrl = process.env.ATLAS_URI;
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 
 let instance = null;
 
@@ -54,7 +54,7 @@ class DAO {
    * @returns an object that contains the specified id
    */
   async findById(id, projection) {
-    let result = await this.collection.findOne({"_id": id}).project(projection);
+    let result = await this.collection.findOne({"_id": ObjectId(id)}, projection);
     return result;
   }
 

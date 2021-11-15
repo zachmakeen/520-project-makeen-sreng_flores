@@ -31,6 +31,10 @@ router.get("/meteorite_landing/:id", async (req, res) => {
 
 //retrieve a list of meteorite landings
 router.get("/meteorite_landings", async (req, res) => {
+  console.log(req.query.neLat + " " + 
+    req.query.neLon + " " + 
+    req.query.swLat + " " + 
+    req.query.swLon);
   try {
     let ml = await db.findAllInRectangle(
       req.query.neLat,
