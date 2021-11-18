@@ -4,6 +4,9 @@ const router = express.Router();
 // get db connection
 const { DAO } = require("../db/conn");
 const db = new DAO();
+// import memory-cache package.
+const cache = require("memory-cache")
+
 
 //parser middleware will parse the json payload
 router.use(express.json());
@@ -70,6 +73,12 @@ router.use(express.json());
  */
 router.get("/", async (req, res) => {
   try {
+    // let cacheKey = "all_meteorite_landings"
+    // let ml = cache.get(cacheKey)
+    // if (!ml) {
+    //   ml = await db.findAll();
+    //   cache.put(cacheKey, ml)
+    // }
     let ml = await db.findAll();
     res.send(ml);
   } catch (e) {
@@ -147,7 +156,12 @@ router.get("/", async (req, res) => {
  */
 router.get("/meteorite_landing/:id", async (req, res) => {
   try {
-    let ml = await db.findById(req.params.id);
+    let cacheKey = req.params.id
+    let ml = cache.get(cacheKey)
+    if (!ml) {
+      ml = await db.findById(cacheKey);
+      cache.put(cacheKey, ml)
+    }
     res.send(ml);
   } catch (e) {
     console.error(e.message);
