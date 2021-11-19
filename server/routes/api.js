@@ -276,7 +276,7 @@ router.get("/meteorite_landings", async (req, res) => {
     // If the information could not be found in the cache, perform a database lookup.
     if (!ml) {
       // Database lookup.
-      let ml = await db.findAllInRectangle(
+      ml = await db.findAllInRectangle(
         parseFloat(neLon),
         parseFloat(neLat),
         parseFloat(swLon),

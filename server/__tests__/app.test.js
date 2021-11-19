@@ -23,7 +23,6 @@ describe("GET /api ", () => {
     const resolvedValue = [{ "_id": "randomId" }]
     jest.spyOn(DAO.prototype, "findAll").mockResolvedValue(resolvedValue)
     const response = await request(app).get("/api");
-    console.log(response.text)
     expect(response.text).toEqual(JSON.stringify(resolvedValue))
     expect(response.statusCode).toBe(200)
     expect(response.type).toBe("application/json")
@@ -41,7 +40,6 @@ describe("GET /api/meteorite_landing/:id", () => {
     const resolvedValue = { "_id": "abcd2134fce2342" }
     jest.spyOn(DAO.prototype, "findById").mockResolvedValue(resolvedValue)
     const response = await request(app).get("/api/meteorite_landing/" + resolvedValue._id);
-    console.log(response.text)
     expect(response.text).toEqual(JSON.stringify(resolvedValue))
     expect(response.statusCode).toBe(200)
     expect(response.type).toBe("application/json")
@@ -54,12 +52,11 @@ describe("GET /api/meteorite_landing/:id", () => {
  * status code 200.
  */
 describe("GET /api/meteorite_landings/", () => {
-  test("Test api/mtetorite_landings/", async () => {
+  test("Test api/meteorite_landings/", async () => {
     const resolvedValue = [{ "_id": "abcd2134fce2342" }]
     const params = "neLon=10&neLat=12&swLon=14&swLat=45"
     jest.spyOn(DAO.prototype, "findAllInRectangle").mockResolvedValue(resolvedValue)
     const response = await request(app).get("/api/meteorite_landings/?" + params);
-    console.log(response.text);
     expect(response.text).toEqual(JSON.stringify(resolvedValue));
     expect(response.statusCode).toBe(200)
     expect(response.type).toBe("application/json")
