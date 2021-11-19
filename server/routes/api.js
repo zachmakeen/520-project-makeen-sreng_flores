@@ -4,11 +4,11 @@ const router = express.Router();
 // get db connection
 const { DAO } = require("../db/conn");
 const db = new DAO();
-// import memory-cache package.
-const cache = require("memory-cache")
+// Import memory-cache package.
+const cache = require("memory-cache");
 
 
-//parser middleware will parse the json payload
+// Parser middleware will parse the json payload
 router.use(express.json());
 
 /**
@@ -73,13 +73,17 @@ router.use(express.json());
  */
 router.get("/", async (req, res) => {
   try {
-    // let cacheKey = "all_meteorite_landings"
-    // let ml = cache.get(cacheKey)
-    // if (!ml) {
-    //   ml = await db.findAll();
-    //   cache.put(cacheKey, ml)
-    // }
-    let ml = await db.findAll();
+    // Generate a cache key pair.
+    let cacheKey = "all_meteorite_landings"
+    // Fetch information in the cache first.
+    let ml = cache.get(cacheKey);
+    // If the information couldn't be found in the cache, look up in the database.
+    if (!ml) {
+      // Database lookup.
+      ml = await db.findAll();
+      // Store a copy in the cache for future lookup.
+      cache.put(cacheKey, ml);
+    }
     res.send(ml);
   } catch (e) {
     console.error(e.message);
@@ -156,11 +160,16 @@ router.get("/", async (req, res) => {
  */
 router.get("/meteorite_landing/:id", async (req, res) => {
   try {
-    let cacheKey = req.params.id
-    let ml = cache.get(cacheKey)
+    // Generate a key pair for the cache.
+    let cacheKey = req.params.id;
+    // Fetch information in the cache.
+    let ml = cache.get(cacheKey);
+    // If the information could not be found in the cache, perform a database lookup.
     if (!ml) {
+      // Database lookup.
       ml = await db.findById(cacheKey);
-      cache.put(cacheKey, ml)
+      // Store a copy to the cache.
+      cache.put(cacheKey, ml);
     }
     res.send(ml);
   } catch (e) {
@@ -256,12 +265,26 @@ router.get("/meteorite_landing/:id", async (req, res) => {
  */
 router.get("/meteorite_landings", async (req, res) => {
   try {
-    let ml = await db.findAllInRectangle(
-      parseFloat(req.query.neLon),
-      parseFloat(req.query.neLat),
-      parseFloat(req.query.swLon),
-      parseFloat(req.query.swLat)
-    );
+    let neLon = req.query.neLon,
+      neLat = req.query.neLat,
+      swLon = req.query.swLon,
+      swLat = req.query.swLat;
+    // Generate a key pair for the cache.
+    let cacheKey = neLon + " " + neLat + " " + swLon + " " + swLat + " ";
+    // Fetch information in the cache.
+    let ml = cache.get(cacheKey);
+    // If the information could not be found in the cache, perform a database lookup.
+    if (!ml) {
+      // Database lookup.
+      let ml = await db.findAllInRectangle(
+        parseFloat(neLon),
+        parseFloat(neLat),
+        parseFloat(swLon),
+        parseFloat(swLat)
+      );
+      // Store a copy to the cache.
+      cache.put(cacheKey, ml);
+    }
     res.send(ml);
   } catch (e) {
     console.error(e.message);
