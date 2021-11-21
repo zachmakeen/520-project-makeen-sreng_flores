@@ -165,7 +165,7 @@ router.get("/meteorite_landing/:id", async (req, res) => {
  *       - in: query
  *         name: neLon
  *         required: true
- *         description: north-east latitude
+ *         description: north-east longitude
  *         schema:
  *           type: number
  *       - in: query
@@ -177,13 +177,13 @@ router.get("/meteorite_landing/:id", async (req, res) => {
  *       - in: query
  *         name: swLon
  *         required: true
- *         description: north-east latitude
+ *         description: south-west longitude
  *         schema:
  *           type: number
  *       - in: query
  *         name: swLat
  *         required: true
- *         description: north-east latitude
+ *         description: south-west latitude
  *         schema:
  *           type: number
  *      responses:
