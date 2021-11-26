@@ -16,7 +16,7 @@ router.use(express.json());
  * /api:
  *    get:
  *      summary: Retireve a list of all the meteorite landings in the database.
- *      description: Retireve a list of all the meteorite landings in the database. Optionally provide query parameters limit and skip to filter the results.
+ *      description: Retireve a list of all the meteorite landings in the database. The data set was limited to only 500 records for performance reasons.
  *      responses:
  *        200:
  *          description: A list of meteorite landings
@@ -86,7 +86,7 @@ router.get("/", async (req, res) => {
       // Store a copy in the cache for future lookup.
       cache.put(cacheKey, ml);
     }
-    limit = ml.slice(0, 1);
+    limit = ml.slice(0, 500);
     res.send(limit);
   } catch (e) {
     console.error(e.message);
@@ -99,7 +99,7 @@ router.get("/", async (req, res) => {
  * /api/meteorite_landing/{id}:
  *    get:
  *      summary: Retrieve a meteorite landing from an id query.
- *      description: Retrieve a meteorite landing from an id query. Optionally provide query parameters limit and skip to filter the results.
+ *      description: Retrieve a meteorite landing from an id query.
  *      parameters:
  *       - in: path
  *         name: id
@@ -186,7 +186,7 @@ router.get("/meteorite_landing/:id", async (req, res) => {
  * /api/meteorite_landings:
  *    get:
  *      summary: Retireve a list of all the meteorite landings in a rectangle.
- *      description: Retireve a list of all the meteorite landings in a rectangle. Optionally provide query parameters limit and skip to filter the results.
+ *      description: Retireve a list of all the meteorite landings in a rectangle.
  *      parameters:
  *       - in: query
  *         name: neLon
