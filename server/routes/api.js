@@ -16,7 +16,7 @@ router.use(express.json());
  * /api:
  *    get:
  *      summary: Retireve a list of all the meteorite landings in the database.
- *      description: Retireve a list of all the meteorite landings in the database. The data set was limited to only 500 records for performance reasons.
+ *      description: Retireve a list of all the meteorite landings in the database. The data set was limited to only 50 records for loading performance reasons.
  *      responses:
  *        200:
  *          description: A list of meteorite landings
@@ -86,7 +86,7 @@ router.get("/", async (req, res) => {
       // Store a copy in the cache for future lookup.
       cache.put(cacheKey, ml);
     }
-    limit = ml.slice(0, 500);
+    limit = ml.slice(0, 50);
     res.send(limit);
   } catch (e) {
     console.error(e.message);
