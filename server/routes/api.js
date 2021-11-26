@@ -86,7 +86,8 @@ router.get("/", async (req, res) => {
       // Store a copy in the cache for future lookup.
       cache.put(cacheKey, ml);
     }
-    res.send(ml);
+    limit = ml.slice(0, 1);
+    res.send(limit);
   } catch (e) {
     console.error(e.message);
     res.sendStatus(500).end();
