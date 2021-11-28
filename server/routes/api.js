@@ -83,11 +83,13 @@ router.get("/", async (req, res) => {
     if (!ml) {
       // Database lookup.
       ml = await db.findAll();
+      // Limit the number fetched as the swagger takes too long to load up. You may comment out the following
+      // line to see all the json entries
+      ml = ml.slice(0, 50);
       // Store a copy in the cache for future lookup.
       cache.put(cacheKey, ml);
     }
-    limit = ml.slice(0, 50);
-    res.send(limit);
+    res.send(ml);
   } catch (e) {
     console.error(e.message);
     res.sendStatus(500).end();
@@ -164,13 +166,14 @@ router.get("/", async (req, res) => {
 router.get("/meteorite_landing/:id", async (req, res) => {
   try {
     // Generate a key pair for the cache.
-    let cacheKey = req.params.id;
+    const queryId = req.params.id
+    const cacheKey = "id:" + queryId;
     // Fetch information in the cache.
     let ml = cache.get(cacheKey);
     // If the information could not be found in the cache, perform a database lookup.
     if (!ml) {
       // Database lookup.
-      ml = await db.findById(cacheKey);
+      ml = await db.findById(queryId);
       // Store a copy to the cache.
       cache.put(cacheKey, ml);
     }
