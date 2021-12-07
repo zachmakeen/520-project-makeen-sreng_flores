@@ -9,3 +9,18 @@ let minZoom;
 let maxZoom;
 // to be changed to a const later
 let initialZoom;
+
+// To be used for the initiali bounds.
+let neLat;
+let neLon;
+let swLat;
+let swLon;
+
+navigator.geolocation.getCurrentPosition
+export default {
+  attribution: attribution,
+  tileUrl: tileUrl,
+  minZoom: minZoom,
+  maxZoom: maxZoom,
+  initialZoom: initialZoom
+}
