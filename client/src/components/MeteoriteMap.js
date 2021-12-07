@@ -14,24 +14,51 @@ import "react-leaflet-markercluster/dist/styles.min.css";
  */
 class MeteoriteMap extends Component {
   /**
-   * 
+   * The constructor sets the values of the states
    * @param {*} props 
    */
   constructor(props) {
     // super call to initialize component
     super(props);
+    // set up the states
     this.state = {
       meteoritesCoords: [],
-      selectedMeteoritePoint: null
+      selectedMeteorite: null
     };
+  }
 
+  /**
+   * 
+   */
+  async componentDidMount() {
+    try {
+      const json = await this.fetchAllMeteorites();
+      this.setState({
+        meteoritesCoords: json
+      })
+      console.log(json);
+    } catch (e) {
+      console.error(e)
+    }
   }
   /**
    * 
    * @returns 
    */
+  async fetchAllMeteorites() {
+    let resp = await fetch("/api/");
+    if (!resp.ok) {
+      throw new Error("Could not fetch");
+    }
+    let json = await resp.json();
+    return json;
+  }
+
+  /**
+   * 
+   * @returns 
+   */
   render() {
-    console.log(this.props.params);
     return (
       <React.Fragment>
         <MapContainer
@@ -50,23 +77,31 @@ class MeteoriteMap extends Component {
             url={this.props.params.tileUrl}
             attribution={this.props.params.attribution} />
 
-          <MarkerClusterGroup>
+          <MarkerClusterGroup
+            spiderfyOnMaxZoom={false}
+            zoomToBoundsOnClick={true}
+            showCoverageOnHover={true}
+            removeOutsideVisibleBounds={false}
+            disableClusteringAtZoom={this.props.params.maxZoom}
+          >
             {
               // Loop over the array of geolocations And create markers for each of them.
               this.state.meteoritesCoords.map((coord, index) => {
-                <CircleMarker
-                  key={index}
-                  color={"blue"}
-                  radius={5}
-                  opacity={1}
-                  weight={1}
-                  center={coord.geo.type.coordinates}
-                  eventHandlers={{
-                    click: () => {
-                      this.setState({ activeTree: item });
-                    },
-                  }}
-                />
+                console.log("marker : " + coord);
+                return (
+                  < CircleMarker
+                    key={index}
+                    color={"red"}
+                    radius={5}
+                    opacity={1}
+                    weight={1}
+                    center={coord.geo.coordinates}
+                    eventHandlers={{
+                      click: () => {
+                        this.setState({ selectedMeteorite: item });
+                      },
+                    }}
+                  />);
               })
             }
           </MarkerClusterGroup>

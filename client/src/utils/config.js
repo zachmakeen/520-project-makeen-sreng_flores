@@ -8,7 +8,7 @@ const minZoom = 1;
 // Maximum zoom into the map
 const maxZoom = 18;
 // Initial zoom of the map
-const initialZoom = 5;
+const initialZoom = 8;
 
 // To be used for the initial bounds.
 let neLat;
@@ -16,7 +16,7 @@ let neLon;
 let swLat;
 let swLon;
 
-const center = [-71, 46];
+const center = [45.5017, -73.5673];
 
 export default {
   attribution: attribution,
