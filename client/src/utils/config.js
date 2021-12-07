@@ -1,26 +1,28 @@
-"use strict";
 
+// eslint-disable-next-line max-len
 const attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors";
 
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 // to be changed to a const later
-let minZoom;
-// to be changed to a const later
-let maxZoom;
-// to be changed to a const later
-let initialZoom;
+const minZoom = 1;
+// Maximum zoom into the map
+const maxZoom = 18;
+// Initial zoom of the map
+const initialZoom = 5;
 
-// To be used for the initiali bounds.
+// To be used for the initial bounds.
 let neLat;
 let neLon;
 let swLat;
 let swLon;
 
-navigator.geolocation.getCurrentPosition
+const center = [-71, 46];
+
 export default {
   attribution: attribution,
   tileUrl: tileUrl,
   minZoom: minZoom,
   maxZoom: maxZoom,
-  initialZoom: initialZoom
+  zoom: initialZoom,
+  center: center
 }
