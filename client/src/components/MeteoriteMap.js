@@ -9,6 +9,7 @@ import MarkerClusterGroup from "react-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
 import "react-leaflet-markercluster/dist/styles.min.css";
 import MeteoriteTooltip from "./MeteoriteTooltip";
+import MeteoriteMapMove from "./MeteoriteMapMove";
 
 /**
  * The main meteorite map
@@ -28,7 +29,6 @@ class MeteoriteMap extends Component {
     };
 
     this.closePopup = this.closePopup.bind(this);
-    this.swapCoords = this.swapCoords.bind(this);
   }
 
   /**
@@ -36,7 +36,7 @@ class MeteoriteMap extends Component {
    */
   async componentDidMount() {
     try {
-      const json = await this.fetchAllMeteorites();
+      const json = await this.fetchMeteoritesInRectangle();
       this.setState({
         meteoritesCoords: json
       })
@@ -45,6 +45,40 @@ class MeteoriteMap extends Component {
       console.error(e)
     }
   }
+
+  async componentDidUpdate(prevProps) {
+    if (prevProps.bounds.equals(this.props.bounds)) {
+      try {
+        const json = await this.fetchMeteoritesInRectangle();
+        this.setState({
+          meteoritesCoords: json
+        })
+        console.log(json);
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
+  async fetchMeteoritesInRectangle() {
+    // let url = new URL("/api/meteorite_landings")
+    // url.params.set();
+    
+    let bounds = this.props.bounds.toBBoxString().split(",");
+    console.log(bounds);
+    console.log(this.props.bounds.toBBoxString());
+    let resp = await fetch(`/api/meteorite_landings?neLat=${bounds[3]}&neLon=${bounds[2]}&swLat=${bounds[1]}&swLon=${bounds[0]}`);
+    if (!resp.ok) {
+      throw new Error("Could not fetch");
+    }
+    let json = await resp.json();
+    json.forEach(met => {
+      met.geo.coordinates = met.geo.coordinates.reverse();
+    })
+    console.log(json);
+    return json;
+  }
+
   /**
    * 
    * @returns 
@@ -67,9 +101,9 @@ class MeteoriteMap extends Component {
     });
   }
 
-  swapCoords(item) {
-    return item.reverse();
-  }
+  // swapCoords(item) {
+  //   return item.reverse();
+  // }
 
   /**
    * 
@@ -127,6 +161,7 @@ class MeteoriteMap extends Component {
               ? <Popup position={this.state.selectedMeteorite.geo.coordinates} onClose={this.closePopup}><MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates}/></Popup>
               : <></>
           }
+          <MeteoriteMapMove action={this.props.action}/>
         </MapContainer>
       </React.Fragment >);
   }

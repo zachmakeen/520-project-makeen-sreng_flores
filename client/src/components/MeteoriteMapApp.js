@@ -13,7 +13,20 @@ class MeteoriteMapApp extends Component {
    */
   constructor(props) {
     super(props);
+
+    this.state = {
+      bounds: config.bounds
+    }
+
+    this.setBounds = this.setBounds.bind(this);
   }
+
+  setBounds(bounds) {
+    this.setState({
+      bounds: bounds
+    });
+  }
+
   /**
    * 
    * @returns 
@@ -21,7 +34,7 @@ class MeteoriteMapApp extends Component {
   render() {
     // Just for testing
     return <MeteoriteMap
-      params={config} />
+      params={config} action={this.setBounds} bounds={this.state.bounds}/>
   }
 }
 export default MeteoriteMapApp;
