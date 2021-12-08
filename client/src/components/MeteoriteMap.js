@@ -8,6 +8,7 @@ import {
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
 import "react-leaflet-markercluster/dist/styles.min.css";
+import MeteoriteTooltip from "./MeteoriteTooltip";
 
 /**
  * The main meteorite map
@@ -25,6 +26,9 @@ class MeteoriteMap extends Component {
       meteoritesCoords: [],
       selectedMeteorite: null
     };
+
+    this.closePopup = this.closePopup.bind(this);
+    this.swapCoords = this.swapCoords.bind(this);
   }
 
   /**
@@ -51,7 +55,20 @@ class MeteoriteMap extends Component {
       throw new Error("Could not fetch");
     }
     let json = await resp.json();
+    json.forEach(met => {
+      met.geo.coordinates = met.geo.coordinates.reverse();
+    })
     return json;
+  }
+
+  closePopup() {
+    this.setState({
+      selectedMeteorite: null
+    });
+  }
+
+  swapCoords(item) {
+    return item.reverse();
   }
 
   /**
@@ -86,8 +103,8 @@ class MeteoriteMap extends Component {
           >
             {
               // Loop over the array of geolocations And create markers for each of them.
-              this.state.meteoritesCoords.map((coord, index) => {
-                console.log("marker : " + coord);
+              this.state.meteoritesCoords.map((item, index) => {
+                console.log(item.geo.coordinates);
                 return (
                   < CircleMarker
                     key={index}
@@ -95,7 +112,7 @@ class MeteoriteMap extends Component {
                     radius={5}
                     opacity={1}
                     weight={1}
-                    center={coord.geo.coordinates}
+                    center={item.geo.coordinates}
                     eventHandlers={{
                       click: () => {
                         this.setState({ selectedMeteorite: item });
@@ -105,6 +122,11 @@ class MeteoriteMap extends Component {
               })
             }
           </MarkerClusterGroup>
+          {
+            this.state.selectedMeteorite !== null
+              ? <Popup position={this.state.selectedMeteorite.geo.coordinates} onClose={this.closePopup}><MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates}/></Popup>
+              : <></>
+          }
         </MapContainer>
       </React.Fragment >);
   }
