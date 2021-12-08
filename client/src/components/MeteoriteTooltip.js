@@ -39,11 +39,18 @@ class MeteoriteTooltip extends Component {
         border: '1px solid #dadde9',
       },
     }));
-    
+
     return (
-      <Tooltip title="Add" arrow>
-        <Button>Arrow</Button>
-      </Tooltip>
+      <HtmlTooltip
+        title={
+          <React.Fragment>
+            <Typography color="inherit">Tooltip with HTML</Typography>
+            <em>{"And here's"}</em> <b>{'some'}</b> <u>{'amazing content'}</u>.{' '}
+            {"It's very engaging. Right?"}
+          </React.Fragment>
+        }
+      >
+      </HtmlTooltip>
     );
   }
 }
