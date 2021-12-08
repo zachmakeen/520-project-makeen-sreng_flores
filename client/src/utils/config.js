@@ -5,7 +5,7 @@ const attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">
 
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 // to be changed to a const later
-const minZoom = 4;
+const minZoom = 1;
 // Maximum zoom into the map
 const maxZoom = 18;
 // Initial zoom of the map
@@ -27,11 +27,9 @@ let corner1 = L.latLng(40.712, -74.227);
 let corner2 = L.latLng(40.774, -74.125);
 let bounds = L.latLngBounds(corner1, corner2);
 
-
-// let neLat = 0;
-// let neLon = 0;
-// let swLat = 0;
-// let swLon = 0;
+corner1 = L.latLng(-90, -180);
+corner2 = L.latLng(90, 180);
+const maxBounds = L.latLngBounds(corner1, corner2);
 
 const center = [45.5017, -73.5673];
 
@@ -42,5 +40,6 @@ export default {
   maxZoom: maxZoom,
   zoom: initialZoom,
   center: center,
-  bounds: bounds
+  bounds: bounds,
+  maxBounds: maxBounds
 }

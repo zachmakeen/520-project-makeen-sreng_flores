@@ -47,9 +47,10 @@ class MeteoriteMap extends Component {
   }
 
   async componentDidUpdate(prevProps) {
-    if (prevProps.bounds.equals(this.props.bounds)) {
+    if (!prevProps.bounds.contains(this.props.bounds)) {
+      console.log("Changes in bounds")
       try {
-        const json = await this.fetchMeteoritesInRectangle();
+        const json = await this.fetchMeteoritesInRectangle(this.props.bounds, this.props.maxBounds);
         this.setState({
           meteoritesCoords: json
         })
@@ -60,18 +61,22 @@ class MeteoriteMap extends Component {
     }
   }
 
-  async fetchMeteoritesInRectangle() {
+  async fetchMeteoritesInRectangle(boundingBox, maxBounds) {
     // let url = new URL("/api/meteorite_landings")
     // url.params.set();
-    
-    let bounds = this.props.bounds.toBBoxString().split(",");
-    console.log(bounds);
-    console.log(this.props.bounds.toBBoxString());
-    let resp = await fetch(`/api/meteorite_landings?neLat=${bounds[3]}&neLon=${bounds[2]}&swLat=${bounds[1]}&swLon=${bounds[0]}`);
+    console.log(boundingBox);
+    boundingBox = maxBounds.contains(boundingBox) ? boundingBox : maxBounds;
+    console.log(boundingBox.equals(maxBounds));
+    const neLat = boundingBox.getNorth();
+    const neLon = boundingBox.getEast();
+    const swLon = boundingBox.getSouth();
+    const swLat = boundingBox.getWest();
+
+    const resp = await fetch(`/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLon}&swLon=${swLat}`);
     if (!resp.ok) {
       throw new Error("Could not fetch");
     }
-    let json = await resp.json();
+    const json = await resp.json();
     json.forEach(met => {
       met.geo.coordinates = met.geo.coordinates.reverse();
     })
@@ -89,7 +94,7 @@ class MeteoriteMap extends Component {
       throw new Error("Could not fetch");
     }
     let json = await resp.json();
-    json.forEach(met => {
+    json.forEach(async (met) => {
       met.geo.coordinates = met.geo.coordinates.reverse();
     })
     return json;
@@ -158,10 +163,10 @@ class MeteoriteMap extends Component {
           </MarkerClusterGroup>
           {
             this.state.selectedMeteorite !== null
-              ? <Popup position={this.state.selectedMeteorite.geo.coordinates} onClose={this.closePopup}><MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates}/></Popup>
+              ? <Popup position={this.state.selectedMeteorite.geo.coordinates} onClose={this.closePopup}><MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates} /></Popup>
               : <></>
           }
-          <MeteoriteMapMove action={this.props.action}/>
+          <MeteoriteMapMove action={this.props.action} />
         </MapContainer>
       </React.Fragment >);
   }
