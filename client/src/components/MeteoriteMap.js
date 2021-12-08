@@ -8,6 +8,7 @@ import {
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import "leaflet/dist/leaflet.css";
 import "react-leaflet-markercluster/dist/styles.min.css";
+import MeteoriteTooltip from "./MeteoriteTooltip";
 
 /**
  * The main meteorite map
@@ -86,8 +87,8 @@ class MeteoriteMap extends Component {
           >
             {
               // Loop over the array of geolocations And create markers for each of them.
-              this.state.meteoritesCoords.map((coord, index) => {
-                console.log("marker : " + coord);
+              this.state.meteoritesCoords.map((item, index) => {
+                console.log(item.geo.coordinates);
                 return (
                   < CircleMarker
                     key={index}
@@ -95,7 +96,7 @@ class MeteoriteMap extends Component {
                     radius={5}
                     opacity={1}
                     weight={1}
-                    center={coord.geo.coordinates}
+                    center={item.geo.coordinates}
                     eventHandlers={{
                       click: () => {
                         this.setState({ selectedMeteorite: item });
@@ -105,6 +106,11 @@ class MeteoriteMap extends Component {
               })
             }
           </MarkerClusterGroup>
+          {
+            this.state.selectedMeteorite !== null
+              ? <Popup><MeteoriteTooltip/></Popup>
+              : <></>
+          }
         </MapContainer>
       </React.Fragment >);
   }
