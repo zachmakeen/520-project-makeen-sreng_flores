@@ -27,7 +27,7 @@ class MeteoriteTooltip extends Component {
 
     return (
       <div>
-        hello
+        {this.props.coordinates}
       </div>
     );
   }

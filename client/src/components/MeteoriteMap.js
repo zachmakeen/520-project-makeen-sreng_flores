@@ -55,6 +55,9 @@ class MeteoriteMap extends Component {
       throw new Error("Could not fetch");
     }
     let json = await resp.json();
+    json.forEach(met => {
+      met.geo.coordinates = met.geo.coordinates.reverse();
+    })
     return json;
   }
 
@@ -121,7 +124,7 @@ class MeteoriteMap extends Component {
           </MarkerClusterGroup>
           {
             this.state.selectedMeteorite !== null
-              ? <Popup position={this.state.selectedMeteorite.geo.coordinates.reverse()} onClose={this.closePopup}><MeteoriteTooltip/></Popup>
+              ? <Popup position={this.state.selectedMeteorite.geo.coordinates} onClose={this.closePopup}><MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates}/></Popup>
               : <></>
           }
         </MapContainer>
