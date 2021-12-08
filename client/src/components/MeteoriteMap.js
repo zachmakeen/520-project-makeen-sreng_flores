@@ -26,6 +26,9 @@ class MeteoriteMap extends Component {
       meteoritesCoords: [],
       selectedMeteorite: null
     };
+
+    this.closePopup = this.closePopup.bind(this);
+    this.swapCoords = this.swapCoords.bind(this);
   }
 
   /**
@@ -53,6 +56,16 @@ class MeteoriteMap extends Component {
     }
     let json = await resp.json();
     return json;
+  }
+
+  closePopup() {
+    this.setState({
+      selectedMeteorite: null
+    });
+  }
+
+  swapCoords(item) {
+    return item.reverse();
   }
 
   /**
@@ -108,7 +121,7 @@ class MeteoriteMap extends Component {
           </MarkerClusterGroup>
           {
             this.state.selectedMeteorite !== null
-              ? <Popup><MeteoriteTooltip/></Popup>
+              ? <Popup position={this.state.selectedMeteorite.geo.coordinates.reverse()} onClose={this.closePopup}><MeteoriteTooltip/></Popup>
               : <></>
           }
         </MapContainer>
