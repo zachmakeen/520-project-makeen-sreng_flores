@@ -35,7 +35,7 @@ app.use(function (req, res, next) {
 
 app.use("/api", api);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use(express.static(path.resolve(__dirname, "../client/build")));
-// app.use(express.static(path.join(__dirname, "../client/build"))); Given for heroku
+// app.use(express.static(path.resolve(__dirname, "../client/build")));
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 module.exports = app;
