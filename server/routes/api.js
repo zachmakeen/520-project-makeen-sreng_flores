@@ -286,7 +286,8 @@ router.get("/meteorite_landings", async (req, res) => {
         parseFloat(neLon),
         parseFloat(neLat),
         parseFloat(swLon),
-        parseFloat(swLat)
+        parseFloat(swLat),
+        { geo: 1 }
       );
       // Store a copy to the cache.
       cache.put(cacheKey, ml);
