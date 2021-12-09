@@ -12,7 +12,9 @@ import MeteoriteTooltip from "./MeteoriteTooltip";
 import MeteoriteMapMove from "./MeteoriteMapMove";
 
 /**
- * The main meteorite map
+ * The main meteorite map component.
+ * @author Juan-Carlos Sreng-Flores
+ * @author Zachary Makeen
  */
 class MeteoriteMap extends Component {
   /**
@@ -29,6 +31,13 @@ class MeteoriteMap extends Component {
     };
 
     this.closePopup = this.closePopup.bind(this);
+    // Define maximum bounds for the fetch api, i.e the greatest
+    // rectangle that the fetch api can have is from 90 to -90 in latitude
+    // and -180 to 180 in longitude
+    this.MAX_LAT = 90;
+    this.MIN_LAT = -90;
+    this.MAX_LON = 180;
+    this.MIN_LON = -180;
   }
 
   /**
@@ -42,7 +51,7 @@ class MeteoriteMap extends Component {
       this.setState({
         meteoritesCoords: json
       });
-      console.log(json);
+      // console.log(json);
     } catch (e) {
       console.error(e);
     }
@@ -80,17 +89,34 @@ class MeteoriteMap extends Component {
   async fetchMeteoritesInRectangle(boundingBox) {
 
     // console.log(boundingBox);
+
     // Get the coordinates for the query.
-    const neLat = boundingBox.getNorth();
-    const neLon = boundingBox.getEast();
-    const swLon = boundingBox.getSouth();
-    const swLat = boundingBox.getWest();
+    let neLat = boundingBox.getNorthEast().lat;
+    let neLon = boundingBox.getNorthEast().lng;
+    let swLat = boundingBox.getSouthWest().lat;
+    let swLon = boundingBox.getSouthWest().lng;
+
+    // Check if the bounds are not out of the bounds specified in the constructor.
+    // We know for a fact that the bounds for neLat will not be lower than the minimum is
+    // because the TileLayer was setup to not wrap the map, and therefore the only way it can go 
+    // out of bounds is from its respective edge side.
+    const url1 = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLat}&swLon=${swLon}`;
+
+    // If the current coord is smaller than the max coord we keep the value
+    neLat = neLat <= this.MAX_LAT ? neLat : this.MAX_LAT;
+    neLon = neLon <= this.MAX_LON ? neLon : this.MAX_LON;
+
+    // If the current coord is greater than the min coord we keep the value.
+    swLon = this.MIN_LON <= swLon ? swLon : this.MIN_LON;
+    swLat = this.MIN_LAT <= swLat ? swLat : this.MIN_LAT;
 
     // eslint-disable-next-line max-len
-    const url = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLon}&swLon=${swLat}`;
+    const url = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLat}&swLon=${swLon}`;
 
+    console.log(url1);
     console.log(url);
     // Perform a fetch to the server
+    let startTime = new Date().getTime();
     const resp = await fetch(url);
     if (!resp.ok) {
       throw new Error("Could not fetch");
@@ -99,13 +125,20 @@ class MeteoriteMap extends Component {
     // Convert to json
     const json = await resp.json();
 
+    let endTime = new Date().getTime();
+
+    console.log("Time to fetch data into json: " + (endTime - startTime) + " ms");
+
+    startTime = new Date().getTime();
+
     // Reverse the coordinates of the result. 
     json.forEach(met => {
       met.geo.coordinates = met.geo.coordinates.reverse();
     });
-
+    endTime = new Date().getTime();
     console.log(json.length);
-    // console.log("Json" + json);
+
+    console.log("Time to reverse the coordinates: " + (endTime - startTime) + "ms");
     return json;
   }
 
@@ -140,68 +173,69 @@ class MeteoriteMap extends Component {
    */
   render() {
     return (
-      <React.Fragment>
-        <MapContainer
-          center={this.props.center}
-          zoom={this.props.zoom}
-          minZoom={this.props.minZoom}
-          maxZoom={this.props.maxZoom}
-          zoomControl={false}
-          updateWhenZooming={false}
-          updateWhenIdle={true}
-          preferCanvas={true}
-          style={{ width: "100%", position: "absolute", top: 0, bottom: 0, zIndex: -1, }}
-          maxBounds={this.props.maxBounds}
+      <MapContainer
+        center={this.props.center}
+        zoom={this.props.zoom}
+        minZoom={this.props.minZoom}
+        maxZoom={this.props.maxZoom}
+        zoomControl={false}
+        updateWhenZooming={false}
+        updateWhenIdle={true}
+        preferCanvas={true}
+        style={{ width: "100%", position: "absolute", top: 0, bottom: 0, zIndex: -1, }}
+        maxBounds={this.props.maxBounds}
+      >
+
+        <TileLayer
+          url={this.props.tileUrl}
+          attribution={this.props.attribution}
+          noWrap={true} />
+
+        <MarkerClusterGroup
+          spiderfyOnMaxZoom={false}
+          zoomToBoundsOnClick={true}
+          showCoverageOnHover={true}
+          removeOutsideVisibleBounds={false}
+          disableClusteringAtZoom={this.props.maxZoom}
         >
-
-          <TileLayer
-            url={this.props.tileUrl}
-            attribution={this.props.attribution}
-            noWrap={true} />
-
-          <MarkerClusterGroup
-            spiderfyOnMaxZoom={false}
-            zoomToBoundsOnClick={true}
-            showCoverageOnHover={true}
-            removeOutsideVisibleBounds={false}
-            disableClusteringAtZoom={this.props.maxZoom}
-          >
-            {
-              // Loop over the array of geolocations And create markers for each of them.
-              this.state.meteoritesCoords.map((item, index) => {
-                // console.log(item.geo.coordinates);
-                return (
-                  < CircleMarker
-                    key={index}
-                    color={"red"}
-                    radius={5}
-                    opacity={1}
-                    weight={1}
-                    center={item.geo.coordinates}
-                    eventHandlers={{
-                      click: () => {
-                        this.setState({ selectedMeteorite: item });
-                      },
-                    }}
-                  />);
-              })
-            }
-          </MarkerClusterGroup>
           {
-            // Display the selected meteorite if it is not null. Otherwise display nothing.
-            this.state.selectedMeteorite !== null
-              ?
-              <Popup
-                position={this.state.selectedMeteorite.geo.coordinates}
-                onClose={this.closePopup}>
-                <MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates} />
-              </Popup>
-              :
-              <></>
+            // Loop over the array of geolocations And create markers for each of them.
+            this.state.meteoritesCoords.map((item, index) => {
+              // console.log(item.geo.coordinates);
+              return (
+                < CircleMarker
+                  key={index}
+                  color={"red"}
+                  radius={5}
+                  opacity={1}
+                  weight={1}
+                  center={item.geo.coordinates}
+                  eventHandlers={{
+                    click: () => {
+                      this.setState({ selectedMeteorite: item });
+                    },
+                  }}
+                />);
+            })
           }
-          <MeteoriteMapMove action={this.props.action} />
-        </MapContainer>
-      </React.Fragment >);
+        </MarkerClusterGroup>
+        {
+          // Display the selected meteorite if it is not null. Otherwise display nothing.
+          this.state.selectedMeteorite !== null
+            // if statement
+            ?
+            <Popup
+              position={this.state.selectedMeteorite.geo.coordinates}
+              onClose={this.closePopup}>
+              <MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates} />
+            </Popup>
+            // else statement
+            :
+            <></>
+        }
+        <MeteoriteMapMove action={this.props.action} />
+      </MapContainer>
+    );
   }
 }
 

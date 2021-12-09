@@ -4,7 +4,11 @@ import config from "../utils/config";
 import MeteoriteMap from "./MeteoriteMap";
 
 /**
- * 
+ * The MeteoriteMapApp component constructs the webiste as a whole by 
+ * rendering the MeteoriteApp component. It passes the config values as 
+ * props to the child component for the necessary configuration.
+ * @author Juan-Carlos Sreng-Flores
+ * @author Zachary Makeen
  */
 class MeteoriteMapApp extends Component {
   /**
@@ -35,7 +39,7 @@ class MeteoriteMapApp extends Component {
   /**
    * Render method to be rendered to the user. It sets the props of the child 
    * components using the config import information
-   * @returns 
+   * @returns {MeteoriteMap}
    */
   render() {
     // Just for testing
