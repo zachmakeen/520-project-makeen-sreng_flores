@@ -16,7 +16,7 @@ class MeteoriteMapApp extends Component {
 
     this.state = {
       bounds: config.bounds
-    }
+    };
 
     this.setBounds = this.setBounds.bind(this);
   }
@@ -33,8 +33,13 @@ class MeteoriteMapApp extends Component {
    */
   render() {
     // Just for testing
-    return <MeteoriteMap
-      params={config} action={this.setBounds} bounds={this.state.bounds} maxBounds={config.maxBounds} />
+    return (
+      <MeteoriteMap
+        params={config} action={this.setBounds}
+        bounds={this.state.bounds}
+        maxBounds={config.maxBounds}
+      />
+    );
   }
 }
 export default MeteoriteMapApp;

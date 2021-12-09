@@ -5,7 +5,7 @@ const attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">
 
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 // to be changed to a const later
-const minZoom = 1;
+const minZoom = 3;
 // Maximum zoom into the map
 const maxZoom = 18;
 // Initial zoom of the map
@@ -42,4 +42,4 @@ export default {
   center: center,
   bounds: bounds,
   maxBounds: maxBounds
-}
+};

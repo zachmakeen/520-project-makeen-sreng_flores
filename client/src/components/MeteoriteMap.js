@@ -36,51 +36,53 @@ class MeteoriteMap extends Component {
    */
   async componentDidMount() {
     try {
-      const json = await this.fetchMeteoritesInRectangle();
+      const json = await this.fetchMeteoritesInRectangle(this.props.bounds);
       this.setState({
         meteoritesCoords: json
-      })
+      });
       console.log(json);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
 
-  async componentDidUpdate(prevProps) {
-    if (!prevProps.bounds.contains(this.props.bounds)) {
-      console.log("Changes in bounds")
+  async componentDidUpdate(oldProps) {
+    if (!oldProps.bounds.contains(this.props.bounds)) {
+      console.log("Changes in bounds");
       try {
-        const json = await this.fetchMeteoritesInRectangle(this.props.bounds, this.props.maxBounds);
+        const json = await this.fetchMeteoritesInRectangle(this.props.bounds);
         this.setState({
           meteoritesCoords: json
-        })
-        console.log(json);
+        });
+        // console.log("other json" + json);
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     }
   }
 
-  async fetchMeteoritesInRectangle(boundingBox, maxBounds) {
+  async fetchMeteoritesInRectangle(boundingBox) {
     // let url = new URL("/api/meteorite_landings")
     // url.params.set();
     console.log(boundingBox);
-    boundingBox = maxBounds.contains(boundingBox) ? boundingBox : maxBounds;
-    console.log(boundingBox.equals(maxBounds));
+    // boundingBox = maxBounds.contains(boundingBox) ? boundingBox : maxBounds;
+    // console.log(boundingBox.equals(maxBounds));
     const neLat = boundingBox.getNorth();
     const neLon = boundingBox.getEast();
     const swLon = boundingBox.getSouth();
     const swLat = boundingBox.getWest();
-
-    const resp = await fetch(`/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLon}&swLon=${swLat}`);
+    const url = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLon}&swLon=${swLat}`;
+    console.log(url);
+    const resp = await fetch(url);
     if (!resp.ok) {
       throw new Error("Could not fetch");
     }
     const json = await resp.json();
     json.forEach(met => {
       met.geo.coordinates = met.geo.coordinates.reverse();
-    })
-    console.log(json);
+    });
+    console.log(json.length);
+    // console.log("Json" + json);
     return json;
   }
 
@@ -96,7 +98,7 @@ class MeteoriteMap extends Component {
     let json = await resp.json();
     json.forEach(async (met) => {
       met.geo.coordinates = met.geo.coordinates.reverse();
-    })
+    });
     return json;
   }
 
@@ -127,11 +129,13 @@ class MeteoriteMap extends Component {
           updateWhenIdle={true}
           preferCanvas={true}
           style={{ width: "100%", position: "absolute", top: 0, bottom: 0, zIndex: -1, }}
+          maxBounds={this.props.maxBounds}
         >
 
           <TileLayer
             url={this.props.params.tileUrl}
-            attribution={this.props.params.attribution} />
+            attribution={this.props.params.attribution}
+            noWrap={true} />
 
           <MarkerClusterGroup
             spiderfyOnMaxZoom={false}
@@ -143,7 +147,7 @@ class MeteoriteMap extends Component {
             {
               // Loop over the array of geolocations And create markers for each of them.
               this.state.meteoritesCoords.map((item, index) => {
-                console.log(item.geo.coordinates);
+                // console.log(item.geo.coordinates);
                 return (
                   < CircleMarker
                     key={index}
