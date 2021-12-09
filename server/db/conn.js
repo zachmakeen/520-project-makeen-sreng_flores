@@ -66,7 +66,7 @@ class DAO {
    * @param {float} swLon south-west longitude
    * @returns an array of objects that are within the area of the polygon
    */
-  async findAllInRectangle(neLon, neLat, swLon, swLat) {
+  async findAllInRectangle(neLon, neLat, swLon, swLat, projection) {
 
     //find missing coordinates
     let nwLon = swLon;
@@ -98,7 +98,7 @@ class DAO {
       }
     };
     //define polygon and find objects that are within this polygon
-    let result = await this.collection.find(query);
+    let result = await this.collection.find(query).project(projection);
     return result.toArray();
   }
 
