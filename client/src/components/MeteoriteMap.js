@@ -32,7 +32,9 @@ class MeteoriteMap extends Component {
   }
 
   /**
-   * 
+   * This function to be called only when the component is mounted to the 
+   * screen for the first time, it will fetch the data set using the props' bounds
+   * information and set the state for re-rendering of the view.
    */
   async componentDidMount() {
     try {
@@ -46,6 +48,13 @@ class MeteoriteMap extends Component {
     }
   }
 
+  /**
+   * The function to be called upon every time this component is updated.
+   * It will look if the current bounding box contains the new bounding box, if so
+   * it will not perform any fetch actions, otherwise it will fetch for new data set 
+   * from the server.
+   * @param {*} oldProps 
+   */
   async componentDidUpdate(oldProps) {
     if (!oldProps.bounds.contains(this.props.bounds)) {
       console.log("Changes in bounds");
@@ -61,33 +70,49 @@ class MeteoriteMap extends Component {
     }
   }
 
+  /**
+   * The function fetches to the server the data set within the bounds of a rectangle.
+   * It returns the values of the data set and reverses the coordinates since the server uses
+   * the coordinates in terms of long, lat format.
+   * @param {LatLngBounds} boundingBox 
+   * @returns {Array}
+   */
   async fetchMeteoritesInRectangle(boundingBox) {
-    // let url = new URL("/api/meteorite_landings")
-    // url.params.set();
-    console.log(boundingBox);
-    // boundingBox = maxBounds.contains(boundingBox) ? boundingBox : maxBounds;
-    // console.log(boundingBox.equals(maxBounds));
+
+    // console.log(boundingBox);
+    // Get the coordinates for the query.
     const neLat = boundingBox.getNorth();
     const neLon = boundingBox.getEast();
     const swLon = boundingBox.getSouth();
     const swLat = boundingBox.getWest();
+
+    // eslint-disable-next-line max-len
     const url = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLon}&swLon=${swLat}`;
+
     console.log(url);
+    // Perform a fetch to the server
     const resp = await fetch(url);
     if (!resp.ok) {
       throw new Error("Could not fetch");
     }
+
+    // Convert to json
     const json = await resp.json();
+
+    // Reverse the coordinates of the result. 
     json.forEach(met => {
       met.geo.coordinates = met.geo.coordinates.reverse();
     });
+
     console.log(json.length);
     // console.log("Json" + json);
     return json;
   }
 
   /**
-   * 
+   * Array of Json objects
+   * It returns the values of the data set and reverses the coordinates since the server uses
+   * the coordinates in terms of long, lat format.
    * @returns 
    */
   async fetchAllMeteorites() {
@@ -108,22 +133,19 @@ class MeteoriteMap extends Component {
     });
   }
 
-  // swapCoords(item) {
-  //   return item.reverse();
-  // }
-
   /**
-   * 
-   * @returns 
+   * This function renders the component to the user's screen by returning 
+   * the elements to be displayed.
+   * @returns {React.Fragment}
    */
   render() {
     return (
       <React.Fragment>
         <MapContainer
-          center={this.props.params.center}
-          zoom={this.props.params.zoom}
-          minZoom={this.props.params.minZoom}
-          maxZoom={this.props.params.maxZoom}
+          center={this.props.center}
+          zoom={this.props.zoom}
+          minZoom={this.props.minZoom}
+          maxZoom={this.props.maxZoom}
           zoomControl={false}
           updateWhenZooming={false}
           updateWhenIdle={true}
@@ -133,8 +155,8 @@ class MeteoriteMap extends Component {
         >
 
           <TileLayer
-            url={this.props.params.tileUrl}
-            attribution={this.props.params.attribution}
+            url={this.props.tileUrl}
+            attribution={this.props.attribution}
             noWrap={true} />
 
           <MarkerClusterGroup
@@ -142,7 +164,7 @@ class MeteoriteMap extends Component {
             zoomToBoundsOnClick={true}
             showCoverageOnHover={true}
             removeOutsideVisibleBounds={false}
-            disableClusteringAtZoom={this.props.params.maxZoom}
+            disableClusteringAtZoom={this.props.maxZoom}
           >
             {
               // Loop over the array of geolocations And create markers for each of them.
@@ -166,9 +188,16 @@ class MeteoriteMap extends Component {
             }
           </MarkerClusterGroup>
           {
+            // Display the selected meteorite if it is not null. Otherwise display nothing.
             this.state.selectedMeteorite !== null
-              ? <Popup position={this.state.selectedMeteorite.geo.coordinates} onClose={this.closePopup}><MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates} /></Popup>
-              : <></>
+              ?
+              <Popup
+                position={this.state.selectedMeteorite.geo.coordinates}
+                onClose={this.closePopup}>
+                <MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates} />
+              </Popup>
+              :
+              <></>
           }
           <MeteoriteMapMove action={this.props.action} />
         </MapContainer>

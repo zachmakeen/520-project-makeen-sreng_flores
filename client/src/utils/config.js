@@ -1,38 +1,32 @@
+// Import leaflet in order to create Latlng objects
 import L from "leaflet";
 
+// Attribution to open street map.org
 // eslint-disable-next-line max-len
 const attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors";
 
 const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 // to be changed to a const later
-const minZoom = 3;
+const minZoom = 5;
 // Maximum zoom into the map
 const maxZoom = 18;
 // Initial zoom of the map
-const initialZoom = 8;
+const initialZoom = 7;
 
-// To be used for the initial bounds.
-// let bounds = {
-//   _southWest: {
-//     lat: 0,
-//     lng: 0
-//   },
-//   _northEast: {
-//     lat: 0,
-//     lng: 0
-//   }
-// };
+// Create initiali bounds for the map.
+const corner1 = L.latLng(40.712, -74.227);
+const corner2 = L.latLng(40.774, -74.125);
+const bounds = L.latLngBounds(corner1, corner2);
 
-let corner1 = L.latLng(40.712, -74.227);
-let corner2 = L.latLng(40.774, -74.125);
-let bounds = L.latLngBounds(corner1, corner2);
+// Create max bounds for the map.
+const maxBounsCorner1 = L.latLng(-90, -180);
+const maxBounsCorner2 = L.latLng(90, 180);
+const maxBounds = L.latLngBounds(maxBounsCorner1, maxBounsCorner2);
 
-corner1 = L.latLng(-90, -180);
-corner2 = L.latLng(90, 180);
-const maxBounds = L.latLngBounds(corner1, corner2);
-
+// Define the initial center upon loading. In this case we use Montreal's coordinates
 const center = [45.5017, -73.5673];
 
+// Export as an object
 export default {
   attribution: attribution,
   tileUrl: tileUrl,

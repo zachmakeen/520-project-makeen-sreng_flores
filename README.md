@@ -11,3 +11,12 @@ Id: 1533920
 Resource data set: 
 
 https://www.kaggle.com/nasa/meteorite-landings
+
+## Configuration 
+
+### MinZoom value.
+
+The configuration of the minimum zoom in the `config.js` file is at a value of `5` since for any lower zoom values the rendering would take too long to load due to the size of the data set.
+
+If you wish to see more of the map for evaluation you may need to change the value of minZoom in the `config.js` file within the `client/src/utils/config.js` path.
+
