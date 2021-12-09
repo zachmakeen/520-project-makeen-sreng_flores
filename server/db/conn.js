@@ -34,7 +34,7 @@ class DAO {
     }
     await this.client.connect();
     this.db = await this.client.db(dbname);
-    this.collection = await this.db.collection(collName)
+    this.collection = await this.db.collection(collName);
   }
 
   /**
@@ -73,27 +73,32 @@ class DAO {
     let nwLat = neLat;
     let seLon = neLon;
     let seLat = swLat;
-
-    //define polygon and find objects that are within this polygon
-    let result = await this.collection.find({
+    // Query to the database, use counter-clock wise for the polygon
+    let query = {
       geo: {
-        $geoWithin:
+        $within:
         {
           $geometry: {
             type: "Polygon",
             coordinates: [
               [
                 [nwLon, nwLat],
-                [neLon, neLat],
-                [seLon, seLat],
                 [swLon, swLat],
+                [seLon, seLat],
+                [neLon, neLat],
                 [nwLon, nwLat]
               ]
-            ]
+            ],
+            crs: {
+              type: "name",
+              properties: { name: "urn:x-mongodb:crs:strictwinding:EPSG:4326" }
+            }
           }
         }
       }
-    });
+    };
+    //define polygon and find objects that are within this polygon
+    let result = await this.collection.find(query);
     return result.toArray();
   }
 
@@ -112,7 +117,7 @@ class DAO {
    * @param {JSON} index 
    */
   async createIndex(index) {
-    return await this.collection.createIndex(index)
+    return await this.collection.createIndex(index);
   }
 
   /**
@@ -123,6 +128,5 @@ class DAO {
   }
 
 }
-
 
 module.exports = { DAO };
