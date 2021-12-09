@@ -124,7 +124,10 @@ class MeteoriteMap extends Component {
           </MarkerClusterGroup>
           {
             this.state.selectedMeteorite !== null
-              ? <Popup position={this.state.selectedMeteorite.geo.coordinates} onClose={this.closePopup}><MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates}/></Popup>
+              ? <Popup position={this.state.selectedMeteorite.geo.coordinates}
+                onClose={this.closePopup}>
+                <MeteoriteTooltip meteorite={this.state.selectedMeteorite} />
+              </Popup>
               : <></>
           }
         </MapContainer>
