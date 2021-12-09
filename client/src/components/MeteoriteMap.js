@@ -66,7 +66,7 @@ class MeteoriteMap extends Component {
    */
   async componentDidUpdate(oldProps) {
     if (!oldProps.bounds.contains(this.props.bounds)) {
-      console.log("Changes in bounds");
+      // console.log("Changes in bounds");
       try {
         const json = await this.fetchMeteoritesInRectangle(this.props.bounds);
         this.setState({
@@ -113,8 +113,8 @@ class MeteoriteMap extends Component {
     // eslint-disable-next-line max-len
     const url = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLat}&swLon=${swLon}`;
 
-    console.log(url1);
-    console.log(url);
+    // console.log(url1);
+    // console.log(url);
     // Perform a fetch to the server
     let startTime = new Date().getTime();
     const resp = await fetch(url);
@@ -127,7 +127,7 @@ class MeteoriteMap extends Component {
 
     let endTime = new Date().getTime();
 
-    console.log("Time to fetch data into json: " + (endTime - startTime) + " ms");
+    // console.log("Time to fetch data into json: " + (endTime - startTime) + " ms");
 
     startTime = new Date().getTime();
 
@@ -136,9 +136,9 @@ class MeteoriteMap extends Component {
       met.geo.coordinates = met.geo.coordinates.reverse();
     });
     endTime = new Date().getTime();
-    console.log(json.length);
+    // console.log(json.length);
 
-    console.log("Time to reverse the coordinates: " + (endTime - startTime) + "ms");
+    // console.log("Time to reverse the coordinates: " + (endTime - startTime) + " ms");
     return json;
   }
 
@@ -172,7 +172,8 @@ class MeteoriteMap extends Component {
    * @returns {React.Fragment}
    */
   render() {
-    return (
+    const startTime = new Date().getTime();
+    const result = (
       <MapContainer
         center={this.props.center}
         zoom={this.props.zoom}
@@ -236,6 +237,9 @@ class MeteoriteMap extends Component {
         <MeteoriteMapMove action={this.props.action} />
       </MapContainer>
     );
+    const endTime = new Date().getTime();
+    // console.log("Time to render the circle marker " + (endTime - startTime) + " ms");
+    return result;
   }
 }
 
