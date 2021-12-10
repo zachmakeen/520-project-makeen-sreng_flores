@@ -76,7 +76,7 @@ router.use(express.json());
 router.get("/", async (req, res) => {
   try {
     // Generate a cache key pair.
-    let cacheKey = "all_meteorite_landings"
+    let cacheKey = "all_meteorite_landings";
     // Fetch information in the cache first.
     let ml = cache.get(cacheKey);
     // If the information couldn't be found in the cache, look up in the database.
@@ -166,7 +166,7 @@ router.get("/", async (req, res) => {
 router.get("/meteorite_landing/:id", async (req, res) => {
   try {
     // Generate a key pair for the cache.
-    const queryId = req.params.id
+    const queryId = req.params.id;
     const cacheKey = "id:" + queryId;
     // Fetch information in the cache.
     let ml = cache.get(cacheKey);
@@ -287,7 +287,7 @@ router.get("/meteorite_landings", async (req, res) => {
         parseFloat(neLat),
         parseFloat(swLon),
         parseFloat(swLat),
-        { geo: 1 }
+        { "geo.coordinates": 1 }
       );
       // Store a copy to the cache.
       cache.put(cacheKey, ml);

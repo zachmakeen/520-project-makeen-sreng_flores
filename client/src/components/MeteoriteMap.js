@@ -81,8 +81,7 @@ class MeteoriteMap extends Component {
 
   /**
    * The function fetches to the server the data set within the bounds of a rectangle.
-   * It returns the values of the data set and reverses the coordinates since the server uses
-   * the coordinates in terms of long, lat format.
+   * It returns the values of the data set.
    * @param {LatLngBounds} boundingBox 
    * @returns {Array}
    */
@@ -129,16 +128,6 @@ class MeteoriteMap extends Component {
 
     // console.log("Time to fetch data into json: " + (endTime - startTime) + " ms");
 
-    startTime = new Date().getTime();
-
-    // Reverse the coordinates of the result. 
-    json.forEach(met => {
-      met.geo.coordinates = met.geo.coordinates.reverse();
-    });
-    endTime = new Date().getTime();
-    // console.log(json.length);
-
-    // console.log("Time to reverse the coordinates: " + (endTime - startTime) + " ms");
     return json;
   }
 

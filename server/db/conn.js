@@ -99,7 +99,9 @@ class DAO {
     };
     //define polygon and find objects that are within this polygon
     let result = await this.collection.find(query).project(projection);
-    return result.toArray();
+    const values = await result.toArray();
+    values.forEach(met => met.geo.coordinates = met.geo.coordinates.reverse());
+    return values;
   }
 
   /**
