@@ -112,6 +112,7 @@ Despite the fact that the `<Popup/>` tags would take a very small amount to load
 Upon removing the compression on the server side, fetching for the data set took almost twice as long to retrieve the data set. This cause tremendous jank in the website, and the reduced the pleasant interaction in the map.
 
 When removing the compression from the website, it completely slowed down any form of fetch to the server, since all responses do benefit from the compression features.
+
 ## Further Suggestions 
 
 Another suggestion in order to improve the performance is to load all the data set upon loading the page. However, when doing so, it would be necessary to present a loading screen to the user so that the user can interact with the website, or to not have the user quit the website too early.
