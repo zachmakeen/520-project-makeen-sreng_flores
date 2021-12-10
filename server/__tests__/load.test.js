@@ -5,14 +5,14 @@ const { expect } = require("@jest/globals");
 test("lat and long properties are defined", async () => {
   const expected = [6.08333, 50.775];
   const data = await load.read("./__tests__/sample.json");
-  console.log(data)
+  console.log(data);
   expect(data[0].geo.coordinates[0]).toBe(expected[0]);
 });
 
 test("lat and long properties are undefined", async () => {
   const expected = "Nullarbor 002";
   const data = await load.read("./__tests__/sample-undefined-lat-long.json");
-  console.log(data)
+  console.log(data);
   expect(data[0].name).not.toMatch(expected);
 });
 

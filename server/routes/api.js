@@ -83,6 +83,8 @@ router.get("/", async (req, res) => {
     if (!ml) {
       // Database lookup.
       ml = await db.findAll();
+      // Reverse the coordinates from from long lat to lat long
+      ml.forEach(met => met.geo.coordinates = met.geo.coordinates.reverse());
       // Limit the number fetched as the swagger takes too long to load up. You may comment out the following
       // line to see all the json entries
       ml = ml.slice(0, 50);
@@ -174,6 +176,9 @@ router.get("/meteorite_landing/:id", async (req, res) => {
     if (!ml) {
       // Database lookup.
       ml = await db.findById(queryId);
+      if (ml) {
+        ml.geo.coordinates = ml.geo.coordinates.reverse();
+      }
       // Store a copy to the cache.
       cache.put(cacheKey, ml);
     }
@@ -289,6 +294,8 @@ router.get("/meteorite_landings", async (req, res) => {
         parseFloat(swLat),
         { "geo.coordinates": 1 }
       );
+      // Reverse the coordinates from from long lat to lat long
+      ml.forEach(met => met.geo.coordinates = met.geo.coordinates.reverse());
       // Store a copy to the cache.
       cache.put(cacheKey, ml);
     }
