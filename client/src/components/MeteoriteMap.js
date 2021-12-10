@@ -51,7 +51,6 @@ class MeteoriteMap extends Component {
       this.setState({
         meteoritesCoords: json
       });
-      // console.log(json);
     } catch (e) {
       console.error(e);
     }
@@ -66,13 +65,11 @@ class MeteoriteMap extends Component {
    */
   async componentDidUpdate(oldProps) {
     if (!oldProps.bounds.contains(this.props.bounds)) {
-      // console.log("Changes in bounds");
       try {
         const json = await this.fetchMeteoritesInRectangle(this.props.bounds);
         this.setState({
           meteoritesCoords: json
         });
-        // console.log("other json" + json);
       } catch (e) {
         console.error(e);
       }
@@ -87,7 +84,6 @@ class MeteoriteMap extends Component {
    */
   async fetchMeteoritesInRectangle(boundingBox) {
 
-    // console.log(boundingBox);
 
     // Get the coordinates for the query.
     let neLat = boundingBox.getNorthEast().lat;
@@ -186,7 +182,6 @@ class MeteoriteMap extends Component {
           {
             // Loop over the array of geolocations And create markers for each of them.
             this.state.meteoritesCoords.map((item, index) => {
-              // console.log(item.geo.coordinates);
               return (
                 < CircleMarker
                   key={index}
