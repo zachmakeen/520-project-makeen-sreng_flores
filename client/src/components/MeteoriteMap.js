@@ -120,10 +120,6 @@ class MeteoriteMap extends Component {
     // Convert to json
     const json = await resp.json();
 
-    let endTime = new Date().getTime();
-
-    // console.log("Time to fetch data into json: " + (endTime - startTime) + " ms");
-
     return json;
   }
 
@@ -145,6 +141,10 @@ class MeteoriteMap extends Component {
     return json;
   }
 
+  /**
+   * The function will be used as a callback to close change the state of the selected meteorite
+   * landing. Upon executing this function, the popup will not rendered and therefore will be closed
+   */
   closePopup() {
     this.setState({
       selectedMeteorite: null
