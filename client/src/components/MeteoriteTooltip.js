@@ -77,25 +77,26 @@ class MeteoriteTooltip extends Component {
    */
   render() {
     return (
-      <div>
+      <>
         <h3>{this.state.name} {this.state.recclass} ({this.state.year})</h3>
-        <p>{'>'} {this.state.mass} g</p>
-        {
-          this.state.nametype === 'Valid'
-            // if block
-            ? <p>{'>'} a typical meteorite</p>
-            // else block
-            : <p>{'>'} a meteorite that has been highly degraded by weather on Earth</p>
-        }
-        {
-          this.state.fall === 'Fell'
-            // if block
-            ? <p>{'>'} the meteorite{"'"}s fall was observed</p>
-            // else block
-            : <p>{'>'} the meteorite{"'"}sfall was not observed </p>
-        }
-        <p>{'>'} {this.state.lat}, {this.state.lng}</p>
-      </div>
+        <ul>
+          <li>Mass: {this.state.mass}g</li>
+          {
+            this.state.nametype === 'Valid'
+              // if block
+              ? <li>It is considered a typical meteorite.</li>
+              // else block
+              : <li>It has been highly degraded by the weather on Earth.</li>
+          }
+          {
+            this.state.fall === 'Fell'
+              // if block
+              ? <li>The meteorite{"'"}s fall was observed.</li>
+              // else block
+              : <li>The meteorite{"'"}s fall was not observed.</li>
+          }
+        </ul>
+      </>
     );
   }
 }
