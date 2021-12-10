@@ -132,15 +132,7 @@ describe("GET /api/meteorite_landings/", () => {
       [
         {
           _id: "618d859f2e36d988bc129218",
-          name: "Aachen",
-          id: 1,
-          nametype: "Valid",
-          recclass: "L5",
-          mass: 21,
-          fall: "Fell",
-          year: 1880,
           geo: {
-            type: "Point",
             coordinates: [6.08333, 50.775]
           }
         }
@@ -149,15 +141,7 @@ describe("GET /api/meteorite_landings/", () => {
       [
         {
           _id: "618d859f2e36d988bc129218",
-          name: "Aachen",
-          id: 1,
-          nametype: "Valid",
-          recclass: "L5",
-          mass: 21,
-          fall: "Fell",
-          year: 1880,
           geo: {
-            type: "Point",
             coordinates: [50.775, 6.08333]
           }
         }
