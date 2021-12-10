@@ -15,8 +15,8 @@ router.use(express.json());
  * @swagger
  * /api:
  *    get:
- *      summary: Retireve a list of all the meteorite landings in the database.
- *      description: Retireve a list of all the meteorite landings in the database. The data set was limited to only 50 records for loading performance reasons.
+ *      summary: Retrieve a list of all the meteorite landings in the database.
+ *      description: Retrieve a list of all the meteorite landings in the database. The data set was limited to only 50 records for loading performance reasons.
  *      responses:
  *        200:
  *          description: A list of meteorite landings
@@ -70,19 +70,21 @@ router.use(express.json());
  *                         type: array
  *                         items:
  *                           type: integer
- *                           description: the longitude of the meteorite's landing and the latitude of the meteorite's landing
- *                           example: [6.08333, 50.775]
+ *                           description: the latitude of the meteorite's landing and the longitude of the meteorite's landing
+ *                           example: [50.775, 6.08333]
  */
 router.get("/", async (req, res) => {
   try {
     // Generate a cache key pair.
-    let cacheKey = "all_meteorite_landings"
+    let cacheKey = "all_meteorite_landings";
     // Fetch information in the cache first.
     let ml = cache.get(cacheKey);
     // If the information couldn't be found in the cache, look up in the database.
     if (!ml) {
       // Database lookup.
       ml = await db.findAll();
+      // Reverse the coordinates from from long lat to lat long
+      ml.forEach(met => met.geo.coordinates = met.geo.coordinates.reverse());
       // Limit the number fetched as the swagger takes too long to load up. You may comment out the following
       // line to see all the json entries
       ml = ml.slice(0, 50);
@@ -160,13 +162,13 @@ router.get("/", async (req, res) => {
  *                        type: array
  *                        items:
  *                          type: integer
- *                          description: the longitude of the meteorite's landing and the latitude of the meteorite's landing
- *                          example: [6.08333, 50.775]
+ *                          description: the latitude of the meteorite's landing and the longitude of the meteorite's landing
+ *                          example: [50.775, 6.08333]
  */
 router.get("/meteorite_landing/:id", async (req, res) => {
   try {
     // Generate a key pair for the cache.
-    const queryId = req.params.id
+    const queryId = req.params.id;
     const cacheKey = "id:" + queryId;
     // Fetch information in the cache.
     let ml = cache.get(cacheKey);
@@ -174,6 +176,9 @@ router.get("/meteorite_landing/:id", async (req, res) => {
     if (!ml) {
       // Database lookup.
       ml = await db.findById(queryId);
+      if (ml) {
+        ml.geo.coordinates = ml.geo.coordinates.reverse();
+      }
       // Store a copy to the cache.
       cache.put(cacheKey, ml);
     }
@@ -188,8 +193,8 @@ router.get("/meteorite_landing/:id", async (req, res) => {
  * @swagger
  * /api/meteorite_landings:
  *    get:
- *      summary: Retireve a list of all the meteorite landings in a rectangle.
- *      description: Retireve a list of all the meteorite landings in a rectangle.
+ *      summary: Retrieve a list of all the meteorite landings in a rectangle.
+ *      description: Retrieve a list of all the meteorite landings in a rectangle. The result only returns the id and the coordinates. To receive more information about the specific meteorite, you may need to fetch to the server using the id.
  *      parameters:
  *       - in: query
  *         name: neLon
@@ -227,47 +232,15 @@ router.get("/meteorite_landing/:id", async (req, res) => {
  *                    type: string
  *                    description: a unique identifier for the meteorite 
  *                    example: 618d4e964e4f72f5c0ad560d
- *                  name:
- *                    type: string
- *                    description: the name of the meteorite (typically a location, often modified with a number, year, composition, etc)
- *                    example: Aachen
- *                  id:
- *                    type: integer
- *                    description: a unique identifier for the meteorite 
- *                    example: 1
- *                  nametype:
- *                    type: string
- *                    description: a typical meteorite 
- *                    example: Aachen
- *                  recclass:
- *                    type: string
- *                    description: the class of the meteorite; one of a large number of classes based on physical, chemical, and other characteristics
- *                    example: L5
- *                  mass:
- *                    type: integer
- *                    description: the mass of the meteorite, in grams
- *                    example: 21
- *                  fall:
- *                    type: string
- *                    description: whether the meteorite was seen falling, or was discovered after its impact
- *                    example: Fell
- *                  year:
- *                    type: integer
- *                    description: the year the meteorite fell, or the year it was found (depending on the value of fell)
- *                    example: 1880
  *                  geo:
  *                    type: object
  *                    properties:
- *                      type:
- *                        type: string
- *                        description: 
- *                        example: Point
  *                      coordinates:
  *                        type: array
  *                        items:
  *                          type: integer
- *                          description: the longitude of the meteorite's landing and the latitude of the meteorite's landing
- *                          example: [6.08333, 50.775]
+ *                          description: the latitude of the meteorite's landing and the longitude of the meteorite's landing
+ *                          example: [50.775, 6.08333]
  */
 router.get("/meteorite_landings", async (req, res) => {
   try {
@@ -287,8 +260,10 @@ router.get("/meteorite_landings", async (req, res) => {
         parseFloat(neLat),
         parseFloat(swLon),
         parseFloat(swLat),
-        { geo: 1 }
+        { "geo.coordinates": 1 }
       );
+      // Reverse the coordinates from from long lat to lat long
+      ml.forEach(met => met.geo.coordinates = met.geo.coordinates.reverse());
       // Store a copy to the cache.
       cache.put(cacheKey, ml);
     }
