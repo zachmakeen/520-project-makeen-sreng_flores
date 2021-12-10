@@ -13,9 +13,9 @@ const maxZoom = 18;
 // Initial zoom of the map
 const initialZoom = 7;
 
-// Create initiali bounds for the map.
-const corner1 = L.latLng(40.712, -74.227);
-const corner2 = L.latLng(40.774, -74.125);
+// Create initiali bounds for the map taken from an instance
+const corner1 = L.latLng(41.705728515237524, -84.11132812500001);
+const corner2 = L.latLng(49.059469847170526, -63.01757812500001);
 const bounds = L.latLngBounds(corner1, corner2);
 
 // Create max bounds for the map.
