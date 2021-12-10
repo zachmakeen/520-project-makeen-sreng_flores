@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -100,7 +100,6 @@ class MeteoriteMap extends Component {
     // We know for a fact that the bounds for neLat will not be lower than the minimum is
     // because the TileLayer was setup to not wrap the map, and therefore the only way it can go 
     // out of bounds is from its respective edge side.
-    const url1 = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLat}&swLon=${swLon}`;
 
     // If the current coord is smaller than the max coord we keep the value
     neLat = neLat <= this.MAX_LAT ? neLat : this.MAX_LAT;
@@ -113,10 +112,7 @@ class MeteoriteMap extends Component {
     // eslint-disable-next-line max-len
     const url = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLat}&swLon=${swLon}`;
 
-    // console.log(url1);
-    // console.log(url);
     // Perform a fetch to the server
-    let startTime = new Date().getTime();
     const resp = await fetch(url);
     if (!resp.ok) {
       throw new Error("Could not fetch");
@@ -125,20 +121,11 @@ class MeteoriteMap extends Component {
     // Convert to json
     const json = await resp.json();
 
-    let endTime = new Date().getTime();
-
-    // console.log("Time to fetch data into json: " + (endTime - startTime) + " ms");
-
-    startTime = new Date().getTime();
-
     // Reverse the coordinates of the result. 
     json.forEach(met => {
       met.geo.coordinates = met.geo.coordinates.reverse();
     });
-    endTime = new Date().getTime();
-    // console.log(json.length);
 
-    // console.log("Time to reverse the coordinates: " + (endTime - startTime) + " ms");
     return json;
   }
 
@@ -172,8 +159,7 @@ class MeteoriteMap extends Component {
    * @returns {React.Fragment}
    */
   render() {
-    const startTime = new Date().getTime();
-    const result = (
+    return (
       <MapContainer
         center={this.props.center}
         zoom={this.props.zoom}
@@ -237,9 +223,6 @@ class MeteoriteMap extends Component {
         <MeteoriteMapMove action={this.props.action} />
       </MapContainer>
     );
-    const endTime = new Date().getTime();
-    // console.log("Time to render the circle marker " + (endTime - startTime) + " ms");
-    return result;
   }
 }
 
