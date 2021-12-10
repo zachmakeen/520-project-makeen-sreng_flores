@@ -14,7 +14,7 @@ import MeteoriteMapMove from "./MeteoriteMapMove";
 /**
  * The main meteorite map component.
  * @author Juan-Carlos Sreng-Flores
- * @author Zachary Makeen
+ * @author Zacharie Makeen
  */
 class MeteoriteMap extends Component {
   /**
@@ -228,7 +228,7 @@ class MeteoriteMap extends Component {
             <Popup
               position={this.state.selectedMeteorite.geo.coordinates}
               onClose={this.closePopup}>
-              <MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates} />
+              <MeteoriteTooltip meteoriteCoords={this.state.selectedMeteorite} />
             </Popup>
             // else statement
             :
