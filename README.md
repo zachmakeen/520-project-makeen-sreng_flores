@@ -76,7 +76,6 @@ The recording taken from the performance tab, simulated a user moving around to 
 <img src="./assets/performance.png">
 
 ## LightHouse Test
-## LightHouse Tests
 The overall score for performance averaged out to 97. Accessibility was met and resulted in a score of 100. Best practices gave a 93 due to low resolution images. SEO which optimizes basic search engine optimization was given a score of 100. Finally in the progressive web app section, there were a few issues. First, the web app manifest does not meet instability requirements. Second, it does not register a service worker that controls page and start_url. Finally, the app does not redirect HTTP traffic to HTTPS.
 <img src="./assets/lighthouse.png" alt="lighthouse test" />
 
