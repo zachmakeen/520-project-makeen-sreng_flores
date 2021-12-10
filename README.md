@@ -12,6 +12,25 @@ Resource data set:
 
 https://www.kaggle.com/nasa/meteorite-landings
 
+## Attributions
+
+### Source data set
+
+The dataset was taken from the nasa within the `Kaggle` website. The reference can be found under this paragraph:
+
+https://www.kaggle.com/nasa/meteorite-landings
+
+### Leafletm Map
+
+The application runs with `React` leaflet api program with tons of usable componetns and functions. The reference to the 
+leaflet can be found under this paragraph:
+
+https://react-leaflet.js.org/
+
+### MeteoriteMapMove Component
+
+The source code for the `<MapMoveComponent/>` has been taken from Professor Jaya Nilakantan at Dawson College. 
+
 ## Configuration 
 
 ### MinZoom value.
