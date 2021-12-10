@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -14,7 +14,7 @@ import MeteoriteMapMove from "./MeteoriteMapMove";
 /**
  * The main meteorite map component.
  * @author Juan-Carlos Sreng-Flores
- * @author Zachary Makeen
+ * @author Zacharie Makeen
  */
 class MeteoriteMap extends Component {
   /**
@@ -99,7 +99,6 @@ class MeteoriteMap extends Component {
     // We know for a fact that the bounds for neLat will not be lower than the minimum is
     // because the TileLayer was setup to not wrap the map, and therefore the only way it can go 
     // out of bounds is from its respective edge side.
-    const url1 = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLat}&swLon=${swLon}`;
 
     // If the current coord is smaller than the max coord we keep the value
     neLat = neLat <= this.MAX_LAT ? neLat : this.MAX_LAT;
@@ -112,10 +111,7 @@ class MeteoriteMap extends Component {
     // eslint-disable-next-line max-len
     const url = `/api/meteorite_landings?neLat=${neLat}&neLon=${neLon}&swLat=${swLat}&swLon=${swLon}`;
 
-    // console.log(url1);
-    // console.log(url);
     // Perform a fetch to the server
-    let startTime = new Date().getTime();
     const resp = await fetch(url);
     if (!resp.ok) {
       throw new Error("Could not fetch");
@@ -161,8 +157,7 @@ class MeteoriteMap extends Component {
    * @returns {React.Fragment}
    */
   render() {
-    const startTime = new Date().getTime();
-    const result = (
+    return (
       <MapContainer
         center={this.props.center}
         zoom={this.props.zoom}
@@ -217,7 +212,7 @@ class MeteoriteMap extends Component {
             <Popup
               position={this.state.selectedMeteorite.geo.coordinates}
               onClose={this.closePopup}>
-              <MeteoriteTooltip coordinates={this.state.selectedMeteorite.geo.coordinates} />
+              <MeteoriteTooltip meteoriteCoords={this.state.selectedMeteorite} />
             </Popup>
             // else statement
             :
@@ -226,9 +221,6 @@ class MeteoriteMap extends Component {
         <MeteoriteMapMove action={this.props.action} />
       </MapContainer>
     );
-    const endTime = new Date().getTime();
-    // console.log("Time to render the circle marker " + (endTime - startTime) + " ms");
-    return result;
   }
 }
 
