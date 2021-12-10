@@ -42,7 +42,6 @@ class MeteoriteMapApp extends Component {
    * @returns {MeteoriteMap}
    */
   render() {
-    // Just for testing
     return (
       <MeteoriteMap
         action={this.setBounds}
