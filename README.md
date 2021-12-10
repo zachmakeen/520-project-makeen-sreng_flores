@@ -101,6 +101,17 @@ The coordinates format in Mongo Db is defined with the `Longitude` before the `L
 
 In addition, the server caches the responses for future queries which will definitely improve performance in cases where multiple fetches are done on the same bounds.
 
+## Removing Cache in Server
+
+Upon removing the cache in the server, the application was much less responsive when moving within area that were already explored. Since the cache was not used, the fetch would take just as long as it would take to load the area for the first time.
+
+Despite the fact that the `<Popup/>` tags would take a very small amount to load, it would take a little longer to load them since the cache was not being used.
+
+## Removing Compression in Server
+
+Upon removing the compression on the server side, fetching for the data set took almost twice as long to retrieve the data set. This cause tremendous jank in the website, and the reduced the pleasant interaction in the map.
+
+When removing the compression from the website, it completely slowed down any form of fetch to the server, since all responses do benefit from the compression features.
 ## Further Suggestions 
 
 Another suggestion in order to improve the performance is to load all the data set upon loading the page. However, when doing so, it would be necessary to present a loading screen to the user so that the user can interact with the website, or to not have the user quit the website too early.
