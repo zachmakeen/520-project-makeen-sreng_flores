@@ -51,7 +51,6 @@ class MeteoriteMap extends Component {
       this.setState({
         meteoritesCoords: json
       });
-      // console.log(json);
     } catch (e) {
       console.error(e);
     }
@@ -66,13 +65,11 @@ class MeteoriteMap extends Component {
    */
   async componentDidUpdate(oldProps) {
     if (!oldProps.bounds.contains(this.props.bounds)) {
-      // console.log("Changes in bounds");
       try {
         const json = await this.fetchMeteoritesInRectangle(this.props.bounds);
         this.setState({
           meteoritesCoords: json
         });
-        // console.log("other json" + json);
       } catch (e) {
         console.error(e);
       }
@@ -81,14 +78,12 @@ class MeteoriteMap extends Component {
 
   /**
    * The function fetches to the server the data set within the bounds of a rectangle.
-   * It returns the values of the data set and reverses the coordinates since the server uses
-   * the coordinates in terms of long, lat format.
+   * It returns the values of the data set.
    * @param {LatLngBounds} boundingBox 
    * @returns {Array}
    */
   async fetchMeteoritesInRectangle(boundingBox) {
 
-    // console.log(boundingBox);
 
     // Get the coordinates for the query.
     let neLat = boundingBox.getNorthEast().lat;
@@ -121,11 +116,6 @@ class MeteoriteMap extends Component {
     // Convert to json
     const json = await resp.json();
 
-    // Reverse the coordinates of the result. 
-    json.forEach(met => {
-      met.geo.coordinates = met.geo.coordinates.reverse();
-    });
-
     return json;
   }
 
@@ -147,6 +137,10 @@ class MeteoriteMap extends Component {
     return json;
   }
 
+  /**
+   * The function will be used as a callback to close change the state of the selected meteorite
+   * landing. Upon executing this function, the popup will not rendered and therefore will be closed
+   */
   closePopup() {
     this.setState({
       selectedMeteorite: null
@@ -188,7 +182,6 @@ class MeteoriteMap extends Component {
           {
             // Loop over the array of geolocations And create markers for each of them.
             this.state.meteoritesCoords.map((item, index) => {
-              // console.log(item.geo.coordinates);
               return (
                 < CircleMarker
                   key={index}
