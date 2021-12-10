@@ -44,7 +44,8 @@ class DAO {
    */
   async findAll(projection) {
     let result = await this.collection.find().project(projection);
-    return result.toArray();
+    result = await result.toArray();
+    return result;
   }
 
   /**
@@ -99,7 +100,8 @@ class DAO {
     };
     //define polygon and find objects that are within this polygon
     let result = await this.collection.find(query).project(projection);
-    return result.toArray();
+    result = await result.toArray();
+    return result;
   }
 
   /**

@@ -7,7 +7,7 @@
  * Email: juan-carlos.sreng-flores@dawsoncollege.qc.ca
  */
 const request = require("supertest");
-const app = require("../app")
+const app = require("../app");
 const { DAO } = require("../db/conn");
 
 jest.mock("../db/conn");
@@ -20,14 +20,53 @@ jest.mock("../db/conn");
  */
 describe("GET /api ", () => {
   test("Test api/ path route and expecting all meteorite landings", async () => {
-    const resolvedValue = [{ "_id": "randomId" }]
-    jest.spyOn(DAO.prototype, "findAll").mockResolvedValue(resolvedValue)
+    const resolvedValue = [
+      {
+        _id: "618d859f2e36d988bc129218",
+        name: "Aachen",
+        id: 1,
+        nametype: "Valid",
+        recclass: "L5",
+        mass: 21,
+        fall: "Fell",
+        year: 1880,
+        geo: {
+          type: "Point",
+          coordinates: [6.08333, 50.775]
+        }
+      }
+    ];
+
+    // Set up the expected value in json
+    const expectedValue = [
+      {
+        _id: "618d859f2e36d988bc129218",
+        name: "Aachen",
+        id: 1,
+        nametype: "Valid",
+        recclass: "L5",
+        mass: 21,
+        fall: "Fell",
+        year: 1880,
+        geo: {
+          type: "Point",
+          coordinates: [50.775, 6.08333]
+        }
+      }
+    ];
+
+    // Spy on the conn.js file since we cannot connect from the test
+    jest.spyOn(DAO.prototype, "findAll").mockResolvedValue(resolvedValue);
+
+    // Send request
     const response = await request(app).get("/api");
-    expect(response.text).toEqual(JSON.stringify(resolvedValue))
-    expect(response.statusCode).toBe(200)
-    expect(response.type).toBe("application/json")
-  })
-})
+
+    // compare the results and stringify the expected result
+    expect(response.text).toEqual(JSON.stringify(expectedValue));
+    expect(response.statusCode).toBe(200);
+    expect(response.type).toBe("application/json");
+  });
+});
 
 /**
  * This test will test the express route where it requires an id specification 
@@ -37,14 +76,50 @@ describe("GET /api ", () => {
  */
 describe("GET /api/meteorite_landing/:id", () => {
   test("Test api/mtetorite_landing/:id path route and expecting the meteorite with ", async () => {
-    const resolvedValue = { "_id": "abcd2134fce2342" }
-    jest.spyOn(DAO.prototype, "findById").mockResolvedValue(resolvedValue)
+    const resolvedValue =
+    {
+      _id: "618d859f2e36d988bc129218",
+      name: "Aachen",
+      id: 1,
+      nametype: "Valid",
+      recclass: "L5",
+      mass: 21,
+      fall: "Fell",
+      year: 1880,
+      geo: {
+        type: "Point",
+        coordinates: [6.08333, 50.775]
+      }
+    };
+
+    // Set up the expected value in json
+    const expectedValue =
+    {
+      _id: "618d859f2e36d988bc129218",
+      name: "Aachen",
+      id: 1,
+      nametype: "Valid",
+      recclass: "L5",
+      mass: 21,
+      fall: "Fell",
+      year: 1880,
+      geo: {
+        type: "Point",
+        coordinates: [50.775, 6.08333]
+      }
+    };
+    // Spy on the conn.js module to resolve the response to a predefined value.
+    jest.spyOn(DAO.prototype, "findById").mockResolvedValue(resolvedValue);
+
+    // Send request
     const response = await request(app).get("/api/meteorite_landing/" + resolvedValue._id);
-    expect(response.text).toEqual(JSON.stringify(resolvedValue))
-    expect(response.statusCode).toBe(200)
-    expect(response.type).toBe("application/json")
-  })
-})
+
+    // Compare the expected value using json stringify.
+    expect(response.text).toEqual(JSON.stringify(expectedValue));
+    expect(response.statusCode).toBe(200);
+    expect(response.type).toBe("application/json");
+  });
+});
 
 /**
  * This test will test the express route where it requires the north east and south west
@@ -53,12 +128,37 @@ describe("GET /api/meteorite_landing/:id", () => {
  */
 describe("GET /api/meteorite_landings/", () => {
   test("Test api/meteorite_landings/", async () => {
-    const resolvedValue = [{ "_id": "abcd2134fce2342" }]
-    const params = "neLon=10&neLat=12&swLon=14&swLat=45"
-    jest.spyOn(DAO.prototype, "findAllInRectangle").mockResolvedValue(resolvedValue)
+    const resolvedValue =
+      [
+        {
+          _id: "618d859f2e36d988bc129218",
+          geo: {
+            coordinates: [6.08333, 50.775]
+          }
+        }
+      ];
+    const expectedValue =
+      [
+        {
+          _id: "618d859f2e36d988bc129218",
+          geo: {
+            coordinates: [50.775, 6.08333]
+          }
+        }
+      ];
+
+    // Set up the queyr params
+    const params = "neLon=10&neLat=12&swLon=14&swLat=45";
+
+    // Spy on the conn.js module to resolve the response to a predefined value.
+    jest.spyOn(DAO.prototype, "findAllInRectangle").mockResolvedValue(resolvedValue);
+
+    // Send request
     const response = await request(app).get("/api/meteorite_landings/?" + params);
-    expect(response.text).toEqual(JSON.stringify(resolvedValue));
-    expect(response.statusCode).toBe(200)
-    expect(response.type).toBe("application/json")
-  })
-})
+
+    // Compare the expected value using json stringify.
+    expect(response.text).toEqual(JSON.stringify(expectedValue));
+    expect(response.statusCode).toBe(200);
+    expect(response.type).toBe("application/json");
+  });
+});
